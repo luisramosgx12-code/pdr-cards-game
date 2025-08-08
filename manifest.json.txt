@@ -1,0 +1,21 @@
+{
+  "name": "POKÉMON PDR CARDS",
+  "short_name": "PDR Cards",
+  "start_url": ".",
+  "display": "standalone",
+  "background_color": "#1a1a1d",
+  "theme_color": "#d4af37",
+  "description": "Abre sobres, colecciona cartas y completa el álbum.",
+  "icons": [
+    {
+      "src": "https://i.imgur.com/v8S4k4K.png",
+      "type": "image/png",
+      "sizes": "192x192"
+    },
+    {
+      "src": "https://i.imgur.com/bYg1j2p.png",
+      "type": "image/png",
+      "sizes": "512x512"
+    }
+  ]
+}

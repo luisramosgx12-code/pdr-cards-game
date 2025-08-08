@@ -1,0 +1,56 @@
+const CACHE_NAME = 'pdr-cards-cache-v1';
+// Lista completa de todos los archivos que tu app necesita para funcionar offline.
+const ASSETS_TO_CACHE = [
+  './', // Esto cachea el archivo principal (index.html o como se llame)
+  './manifest.json',
+  // Fuentes
+  'https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap',
+  // Imágenes de la interfaz y cartas
+  'https://i.imgur.com/wmFBNVx.jpeg', 'https://i.imgur.com/aXgHNgT.png', 'https://i.imgur.com/Td1bOPY.png',
+  'https://i.imgur.com/YdrB6hq.png', 'https://i.imgur.com/5STC7pq.png', 'https://i.imgur.com/cK4vybs.png',
+  'https://i.imgur.com/CJBqWhK.png', 'https://i.imgur.com/iUAkRDR.png', 'https://i.imgur.com/9CzcctW.png',
+  'https://i.imgur.com/ZmD2dmX.png', 'https://i.imgur.com/CTWXciT.png', 'https://i.imgur.com/ArGgYvf.png',
+  'https://i.imgur.com/doqebLl.png', 'https://i.imgur.com/ChuohWd.png', 'https://i.imgur.com/l0a8605.png',
+  'https://i.imgur.com/PdCdOA4.png', 'https://i.imgur.com/PF2Fclq.png', 'https://i.imgur.com/jFxwTbI.png',
+  'https://i.imgur.com/2a28pcI.png', 'https://i.imgur.com/EWSkGTm.png', 'https://i.imgur.com/X4xj3LT.png',
+  'https://i.imgur.com/q0HzMjf.png', 'https://i.imgur.com/I1zh0jC.png', 'https://i.imgur.com/9ORFvil.png',
+  'https://i.imgur.com/fpNYHDY.png', 'https://i.imgur.com/Hy3SvwA.png', 'https://i.imgur.com/zLjKgpl.png',
+  'https://i.imgur.com/otjucwu.png', 'https://i.imgur.com/hR260TD.png', 'https://i.imgur.com/HuDKyto.png',
+  'https://i.imgur.com/uvv1UFI.png', 'https://i.imgur.com/fZdUiju.png', 'https://i.imgur.com/6Pvzodk.png',
+  'https://i.imgur.com/gxsJN5g.png', 'https://i.imgur.com/5AOLCZ9.png', 'https://i.imgur.com/G0SQKoS.png',
+  'https://i.imgur.com/krcKdaz.png', 'https://i.imgur.com/QuRFiIM.png',
+  // Sonidos y música
+  'https://files.catbox.moe/wznayk.mp3', 'https://files.catbox.moe/21x57n.mp3', 'https://files.catbox.moe/erwi8q.mp3',
+  'https://files.catbox.moe/q560m3.mp3', 'https://files.catbox.moe/va4gze.mp3', 'https://files.catbox.moe/krf2tm.mp3',
+  'https://files.catbox.moe/nkm6rs.mp3', 'https://files.catbox.moe/kdtsyq.mp3', 'https://files.catbox.moe/s92ayq.mp3',
+  'https://files.catbox.moe/w859js.wav', 'https://files.catbox.moe/ku5713.mp3', 'https://files.catbox.moe/m70tda.mp3',
+  'https://files.catbox.moe/af1ls0.mp3', 'https://files.catbox.moe/4ltrnk.mp3'
+];
+
+// Evento de instalación: abre la caché y guarda todos nuestros archivos.
+self.addEventListener('install', (event) => {
+  event.waitUntil(
+    caches.open(CACHE_NAME)
+      .then((cache) => {
+        console.log('Cache abierta, guardando assets...');
+        return cache.addAll(ASSETS_TO_CACHE);
+      })
+      .catch(err => console.error('Fallo al guardar en caché durante la instalación', err))
+  );
+});
+
+// Evento de fetch: intercepta las peticiones de red.
+self.addEventListener('fetch', (event) => {
+  event.respondWith(
+    // Estrategia: "Cache primero, luego red".
+    caches.match(event.request)
+      .then((response) => {
+        // Si encontramos la petición en la caché, la devolvemos.
+        if (response) {
+          return response;
+        }
+        // Si no, la pedimos a la red.
+        return fetch(event.request);
+      })
+  );
+});

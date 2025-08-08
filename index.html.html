@@ -1,0 +1,2103 @@
+### Archivo HTML Modificado (`index.html`)
+
+```html
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>POKÉMON PDR CARDS</title>
+    
+    <!-- LÍNEA AÑADIDA PARA PWA -->
+    <link rel="manifest" href="manifest.json">
+    
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
+
+    <style>
+        :root {
+            /* Colores de Tema (Claro por defecto) */
+            --page-bg: radial-gradient(circle at 10% 10%, #E6F3FF 0%, #F5F7FF 90%);
+            --text-color: #333333;
+            --text-color-muted: #666;
+            --heading-color: #333333;
+            --section-bg: #ffffff;
+            --section-border: #e0e0e0;
+            --tab-bg: rgba(255, 255, 255, 0.5);
+            --tab-border: rgba(255, 255, 255, 0.8);
+            --tab-text: #555;
+            --input-bg: #f7f7f7;
+            --input-border: #ccc;
+            --input-text: #333;
+            --global-btn-bg: rgba(255, 255, 255, 0.8);
+            --global-btn-border: #ccc;
+
+            /* Paleta de Colores para componentes (cartas, modales, etc) */
+            --bg-color-component: #1a1a1d; 
+            --primary-color: #2c2c31; 
+            --border-color-component: #46464a;
+            --accent-color: #d4af37; 
+            --text-color-light: #f5f5f5; 
+            --text-muted-light: #a0a0a0; 
+            
+            /* Colores de Calidad (Rarity) */
+            --rarity-common: #b0b0b0; 
+            --rarity-rare: #87ceeb; 
+            --rarity-epic: #b19cd9; 
+            --rarity-trainer: #42e6d4;
+            --rarity-legendary: #d4af37; 
+            --rarity-golden: #FFD700;
+            --rarity-shiny: linear-gradient(45deg, #ff00de, #ff7a00, #f0ff00, #00ff62, #00e5ff, #7700ff);
+            
+            /* Colores de Resplandor (Glow) */
+            --glow-common: rgba(176, 176, 176, 0.6);
+            --glow-rare: rgba(135, 206, 235, 0.6);
+            --glow-epic: rgba(177, 156, 217, 0.7);
+            --glow-trainer: rgba(66, 230, 212, 0.8);
+            --glow-legendary: rgba(212, 175, 55, 0.8);
+            --glow-shiny: rgba(255, 100, 200, 0.9);
+            --glow-golden: rgba(255, 215, 0, 0.9);
+            
+            --dust-color: var(--accent-color);
+        }
+
+        /* Definición del tema oscuro */
+        body.dark-mode {
+            --page-bg: radial-gradient(circle at 10% 10%, #1a1a1d 0%, #0c0c0e 90%);
+            --text-color: #f5f5f5;
+            --text-color-muted: #a0a0a0;
+            --heading-color: #f5f5f5;
+            --section-bg: #2c2c31;
+            --section-border: #46464a;
+            --tab-bg: rgba(44, 44, 49, 0.5);
+            --tab-border: rgba(70, 70, 74, 0.8);
+            --tab-text: #a0a0a0;
+            --input-bg: #1a1a1d;
+            --input-border: #46464a;
+            --input-text: #f5f5f5;
+            --global-btn-bg: rgba(44, 44, 49, 0.8);
+            --global-btn-border: #46464a;
+        }
+        
+        *, *::before, *::after { box-sizing: border-box; }
+        
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(15px); } to { opacity: 1; transform: translateY(0); } }
+
+        @keyframes shiny-gradient-border {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+        
+        body {
+            font-family: 'Poppins', sans-serif;
+            background: var(--page-bg);
+            color: var(--text-color);
+            margin: 0;
+            padding: 20px;
+            overflow-y: auto;
+            transition: background 0.3s ease, color 0.3s ease;
+        }
+        
+        body::-webkit-scrollbar { width: 8px; }
+        body::-webkit-scrollbar-track { background: #f1f1f1; }
+        body::-webkit-scrollbar-thumb { background-color: #cccccc; border-radius: 10px; }
+        body::-webkit-scrollbar-thumb:hover { background-color: #aaaaaa; }
+        body.dark-mode::-webkit-scrollbar-track { background: #2c2c31; }
+        body.dark-mode::-webkit-scrollbar-thumb { background-color: #46464a; }
+        body.dark-mode::-webkit-scrollbar-thumb:hover { background-color: #555555; }
+
+
+        .content-section {
+            display: none;
+            background: var(--section-bg);
+            border: 1px solid var(--section-border);
+            border-radius: 20px;
+            padding: 30px;
+            animation: fadeIn 0.5s ease;
+            color: var(--text-color);
+            box-shadow: 0 8px 30px rgba(0, 0, 0, 0.08);
+            transition: background-color 0.3s ease, border-color 0.3s ease;
+        }
+        .content-section.active { display: block; }
+
+        .tabs { display: flex; justify-content: center; gap: 10px; margin-bottom: 30px; flex-wrap: wrap; }
+        .tab { 
+            padding: 10px 25px; 
+            background: var(--tab-bg); 
+            backdrop-filter: blur(5px);
+            border: 1px solid var(--tab-border);
+            color: var(--tab-text); 
+            border-radius: 50px; 
+            cursor: pointer; 
+            transition: all 0.3s ease; 
+            user-select: none; 
+            font-family: 'Poppins', sans-serif; 
+            font-weight: 600; 
+        }
+        .tab:hover { 
+            color: #111; 
+            border-color: var(--accent-color); 
+            background: rgba(255, 255, 255, 0.8);
+        }
+        body.dark-mode .tab:hover {
+            color: var(--accent-color); 
+            background: rgba(70, 70, 74, 0.8);
+        }
+        .tab.active { 
+            background-color: var(--accent-color); 
+            border-color: var(--accent-color); 
+            color: var(--bg-color-component); 
+            text-shadow: none; 
+        }
+        .tab-icon {
+            font-size: 1.3em;
+            vertical-align: -0.1em;
+            margin-right: 5px;
+        }
+
+        h2 { 
+            border-bottom: 2px solid var(--accent-color); 
+            padding-bottom: 10px; 
+            display: inline-block; 
+            user-select: none; 
+            margin-top:0; 
+            margin-bottom: 20px; 
+            color: var(--heading-color);
+            transition: color 0.3s ease;
+        }
+
+        h3.achievement-category-title {
+            color: var(--heading-color);
+            text-shadow: none;
+            transition: color 0.3s ease;
+        }
+
+        #album-stats {
+            font-family: 'Poppins', sans-serif; font-size: 1rem; font-weight: 600; 
+            color: var(--text-color-muted);
+            background-color: var(--input-bg);
+            padding: 8px 15px; border-radius: 50px; 
+            border: 1px solid var(--input-border);
+            transition: background-color 0.3s ease, border-color 0.3s ease, color 0.3s ease;
+        }
+
+        .collection-controls label { font-size: 0.9em; color: var(--text-color-muted); text-shadow: none; transition: color 0.3s ease; }
+        #collection-sort-select, #collection-columns-select {
+            background-color: var(--input-bg);
+            color: var(--input-text);
+            border: 1px solid var(--input-border);
+            padding: 8px 12px; border-radius: 5px; font-family: 'Poppins', sans-serif; font-weight: 600; cursor: pointer;
+            transition: background-color 0.3s ease, border-color 0.3s ease, color 0.3s ease;
+        }
+        #collection-sort-select option, #collection-columns-select option { background-color: var(--section-bg); color: var(--text-color); }
+        
+        h1, .tab.active, button, .pack span, .timer, #auth-container h2 {
+            font-family: 'Poppins', sans-serif;
+            font-weight: 700;
+            letter-spacing: 0.5px;
+            text-shadow: none;
+        }
+
+        h1 { font-size: 2.8rem; user-select: none; color: var(--accent-color); font-weight: 700; text-shadow: 0 1px 2px rgba(0,0,0,0.1); }
+        
+        main { max-width: 1200px; margin: 0 auto; animation: fadeIn 0.8s ease-out; padding-bottom: 50px; }
+        header { text-align: center; margin-bottom: 20px; position: relative; }
+        header p {
+            font-family: 'Poppins', sans-serif;
+            color: var(--text-color-muted);
+            transition: color 0.3s ease;
+        }
+        
+        #user-info-bar { position: absolute; top: 5px; left: 20px; display: flex; align-items: center; gap: 15px; font-size: 0.9rem; color: var(--text-color-muted); }
+        #current-user-email { color: var(--text-color-muted); display: flex; align-items: center; gap: 8px; }
+        #maestro-emblem { font-size: 1.2rem; display: none; } /* Emblema para el Maestro */
+        #logout-btn, #guest-register-btn { font-family: 'Poppins', sans-serif; font-weight: 600; background: none; border: 1px solid var(--input-border); color: var(--text-color-muted); padding: 5px 10px; border-radius: 5px; cursor: pointer; transition: all 0.2s ease; }
+        #logout-btn:hover, #guest-register-btn:hover { color: var(--accent-color); border-color: var(--accent-color); }
+        #guest-actions span { color: var(--text-color-muted); }
+        
+        #dust-display-container {
+            display: flex; justify-content: center; align-items: center; gap: 15px;
+            font-size: 1.2rem; margin-bottom: 30px; font-family: 'Poppins', sans-serif; font-weight: 600;
+            color: var(--dust-color); text-shadow: 0 0 10px rgba(212, 175, 55, 0.5); user-select: none; flex-wrap: wrap;
+        }
+        
+        #streak-info-display {
+            background-color: var(--input-bg);
+            color: var(--text-color-muted);
+            border: 1px solid var(--input-border);
+            padding: 8px 15px;
+            border-radius: 50px;
+            font-size: 1rem;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            transition: all 0.3s ease;
+        }
+        #streak-info-display span:first-child {
+            font-weight: 600;
+            color: var(--text-color);
+            text-shadow: 0 0 8px rgba(255, 165, 0, 0.7);
+        }
+        #streak-info-display small {
+            font-size: 0.85em;
+            font-style: italic;
+        }
+
+        #add-dust-btn { background: var(--dust-color); color: var(--bg-color-component); border: none; font-size: 0.8rem; padding: 5px 10px; border-radius: 5px; cursor: pointer; transition: all 0.2s ease; text-shadow: none; font-family: 'Poppins', sans-serif; font-weight: bold; }
+        #add-dust-btn:hover { filter: brightness(1.2); transform: scale(1.05); }
+        
+        .packs-page-layout { display: flex; flex-direction: column; gap: 40px; }
+        .pack-category { text-align: center; }
+        .pack-container-grid { display: flex; justify-content: center; gap: 25px; flex-wrap: wrap; }
+        .pack-option { width: 200px; text-align: center; }
+        
+        .pack-option.claimed-pack .pack { border-color: var(--dust-color); }
+        .pack-option.claimed-pack .pack:not([disabled]):hover { border-color: var(--dust-color); }
+        #claimed-pack-count {
+            position: absolute; top: -10px; right: -10px; background-color: var(--dust-color);
+            color: var(--bg-color-component); border-radius: 50%; width: 32px; height: 32px;
+            display: flex; justify-content: center; align-items: center; font-family: 'Poppins', sans-serif; font-weight: 700;
+            font-size: 1.1rem; border: 2px solid #fff; text-shadow: none; z-index: 1;
+        }
+        .pack { 
+            height: 280px; background: transparent; border: none; border-radius: 10px; cursor: pointer; 
+            transition: all 0.3s ease; display: flex; flex-direction: column; justify-content: center; align-items: center; position: relative; 
+            box-shadow: none; user-select: none; padding: 0; margin: 0 auto; 
+        }
+        .pack span { display: none; }
+        .pack-description { 
+            font-family: 'Poppins', sans-serif; font-size: 0.9em; color: var(--text-color-muted);
+            margin-top: 5px; text-shadow: none; font-weight: 400; line-height: 1.4;
+            transition: color 0.3s ease;
+        }
+        .pack-description strong {
+            display: block;
+            font-size: 1.1em;
+            font-weight: 600;
+            color: var(--text-color);
+            transition: color 0.3s ease;
+        }
+        .pack-description small {
+            font-style: italic;
+            color: #888;
+            font-size: 0.8em;
+            margin-top: 4px;
+            display: inline-block;
+        }
+        .pack:not([disabled]):hover { transform: translateY(-8px) scale(1.05); }
+        .pack[disabled] { cursor: not-allowed; opacity: 0.6; }
+        
+        .pack-image { 
+            width: 100%; height: 100%; object-fit: contain; pointer-events: none; 
+            filter: drop-shadow(0 4px 8px rgba(0,0,0,0.3)); 
+        }
+        
+        #album-grid, #collection-grid { display: grid; gap: 20px; }
+        
+        .card-container { perspective: 1500px; position: relative; user-select: none; display: flex; flex-direction: column; align-items: center; }
+        .card-container::before { content: ""; position: absolute; top: 0; left: 0; right: 0; bottom: 0; background: radial-gradient(circle at var(--mouse-x) var(--mouse-y), rgba(255, 255, 255, 0.2), rgba(255, 255, 255, 0) 40%); border-radius: 12px; opacity: 0; transition: opacity 0.3s ease; pointer-events: none; z-index: 3; }
+        .card-container:hover::before { opacity: 1; }
+        
+        .card { 
+            width: 100%; aspect-ratio: 5 / 7; background-color: var(--primary-color); border-radius: 12px; padding: 0;
+            display: flex; flex-direction: column; box-shadow: inset 0 0 10px rgba(0,0,0,0.3), 0 5px 15px rgba(0,0,0,0.2); 
+            border: 2px solid var(--border-color-component); transition: all 0.3s ease; overflow: hidden;
+        }
+        
+        .card-image { width: 100%; height: 65%; object-fit: cover; object-position: center; transition: filter 0.3s ease; border-radius: 0; }
+        .card-image[data-is-custom="true"] { height: 100%; object-fit: cover; border-radius: 0; }
+
+        .card-info { text-align: center; transition: opacity 0.5s ease; padding: 5px 10px 15px; }
+
+        .card-name { font-weight: 600; font-size: 1.1em; margin: 5px 0 8px; text-shadow: none; color: var(--text-color-light);}
+        .card-rarity { font-size: 0.8em; padding: 3px 12px; border-radius: 50px; color: #111; display: inline-block; text-transform: uppercase; font-weight: 600; text-shadow: none; }
+        .card.common { border-color: var(--rarity-common); } .card.rare { border-color: var(--rarity-rare); } .card.epic { border-color: var(--rarity-epic); } .card.trainer { border-color: var(--rarity-trainer); } .card.legendary { border-color: var(--rarity-legendary); } .card.golden { border-color: var(--rarity-golden); }
+        .card.shiny {
+            border-style: solid;
+            border-width: 3px;
+            padding: 2px;
+            border-image-slice: 1;
+            border-image-source: var(--rarity-shiny);
+            background-size: 200% 200%;
+            animation: shiny-gradient-border 3s ease infinite;
+        }
+
+        .card.locked { position: relative; background-image: url('https://i.imgur.com/wmFBNVx.jpeg'); background-size: cover; background-position: center; }
+        .card.locked .card-image, .card.locked .card-info { visibility: hidden; opacity: 0; }
+        .card.locked::before { content: ''; position: absolute; top: 0; left: 0; right: 0; bottom: 0; background-color: rgba(0, 0, 0, 0.6); border-radius: 10px; z-index: 1; transition: opacity 0.5s ease; }
+        .card.locked::after { content: '🔒'; position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); font-size: 3rem; color: rgba(255,255,255,0.7); z-index: 2; text-shadow: none; transition: opacity 0.5s ease; }
+
+        .card-count { position: absolute; top: 5px; left: 5px; background: rgba(0,0,0,0.7); color: white; font-weight: bold; padding: 2px 8px; border-radius: 10px; font-size: 0.9em; z-index: 4; text-shadow: none; }
+        
+        .zoom-icon {
+            position: absolute; top: 5px; right: 5px; width: 28px; height: 28px;
+            background-color: rgba(0, 0, 0, 0.7); color: white; border-radius: 50%;
+            display: flex; justify-content: center; align-items: center; font-size: 1.1rem;
+            cursor: pointer; z-index: 5; opacity: 0; transition: opacity 0.2s ease, transform 0.2s ease;
+            text-shadow: none;
+        }
+        .card-container:hover .zoom-icon { opacity: 1; }
+        .zoom-icon:hover { transform: scale(1.1); background-color: var(--accent-color); color: var(--bg-color-component); }
+
+        .action-button { background-color: var(--accent-color); color: var(--bg-color-component); border: none; padding: 6px 12px; font-size: 0.8em; border-radius: 5px; cursor: pointer; transition: all 0.2s ease; margin-top: 10px; width: 90%; text-shadow: none; font-family: 'Poppins', sans-serif; font-weight: 600; }
+        .action-button:hover:not(:disabled) { filter: brightness(1.1); }
+        .action-button:disabled { background-color: #555; cursor: not-allowed; filter: grayscale(1); }
+        
+        .collection-header, .album-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; flex-wrap: wrap; gap: 20px; }
+        .collection-header h2, .album-header h2 { margin-bottom: 0; white-space: nowrap; }
+        .collection-controls { display: flex; gap: 15px; align-items: center; flex-wrap: wrap; }
+        
+        #collection-sort-select:focus, #collection-columns-select:focus { outline: 1px solid var(--accent-color); }
+
+        #pack-opening-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background-color: rgba(26, 26, 29, 0.9); backdrop-filter: blur(8px); z-index: 1000; display: flex; justify-content: center; align-items: center; opacity: 0; pointer-events: none; transition: opacity 0.5s ease; flex-direction: column; }
+        #pack-opening-overlay.visible { opacity: 1; pointer-events: all; }
+        #pack-opening-overlay.interactive { cursor: pointer; }
+        
+        #sealed-pack-container { position: absolute; width: 300px; height: 420px; cursor: pointer; transition: transform 0.3s; }
+        #sealed-pack-container:hover { transform: scale(1.05); }
+        @keyframes pack-burst { 0% { transform: scale(1); opacity: 1; } 100% { transform: scale(3) rotate(45deg); opacity: 0; } }
+        #sealed-pack-container.opened { animation: pack-burst 0.5s cubic-bezier(0.68, -0.55, 0.27, 1.55) forwards; }
+        #pack-opening-overlay.fast-forward #sealed-pack-container.opened { animation-duration: 0.25s; }
+        .pack-body { 
+            width: 100%; height: 100%; background: linear-gradient(145deg, #46464a, #2c2c31); 
+            border-radius: 15px; box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+            display: flex; justify-content: center; align-items: center; padding: 20px;
+        }
+        .pack-body .pack-image { max-width: 100%; max-height: 100%; object-fit: contain; }
+        
+        #reveal-prompt { position: absolute; bottom: 8%; font-size: 1.2rem; opacity: 0; transition: opacity 0.5s; pointer-events: none; user-select: none; font-family: 'Poppins', sans-serif; color: var(--text-color-light); }
+        #reveal-prompt.visible { opacity: 1; }
+        
+        #revealed-card-area { width: 100%; height: 100%; position: absolute; top: 0; left: 0; perspective: 2000px; pointer-events: none; }
+        .revealed-card-wrapper { 
+            width: 280px; height: 392px; position: absolute; top: 50%; left: 50%; 
+            transform: translate(-50%, -50%) scale(0); 
+            transition: transform 0.5s ease, opacity 0.5s ease; 
+            z-index: 10;
+        }
+
+        .revealed-card-wrapper.is-revealing { transform: translate(-50%, -50%) scale(1.2); }
+        .revealed-card-wrapper.is-collecting { transform: translate(-50%, 120%) scale(0.5); opacity: 0; }
+        .revealed-card { width: 100%; height: 100%; position: relative; transform-style: preserve-3d; transition: transform 0.8s ease; }
+        .revealed-card.is-flipping { transform: rotateY(180deg); }
+        .revealed-card-face { position: absolute; width: 100%; height: 100%; backface-visibility: hidden; border-radius: 12px; overflow: hidden; }
+        .revealed-card-face.front { transform: rotateY(180deg); }
+        
+        #pack-opening-overlay.fast-forward .revealed-card-wrapper { transition-duration: 0.25s; }
+        #pack-opening-overlay.fast-forward .revealed-card { transition-duration: 0.4s; }
+        
+        .revealed-card.glow { animation: rarity-glow-pulse 1.5s; box-shadow: 0 0 25px 8px var(--glow-color); }
+        @keyframes rarity-glow-pulse { 0% { box-shadow: 0 0 15px 3px var(--glow-color); } 50% { box-shadow: 0 0 35px 12px var(--glow-color); } 100% { box-shadow: 0 0 15px 3px var(--glow-color); } }
+        #pack-opening-overlay.fast-forward .revealed-card.glow { animation-duration: 0.75s; }
+        
+        @keyframes epic-card-throb { 0% { transform: translate(-50%, -50%) scale(1.2); } 50% { transform: translate(-50%, -50%) scale(1.25); } 100% { transform: translate(-50%, -50%) scale(1.2); } }
+        #pack-opening-overlay.fast-forward .epic-reveal .revealed-card-wrapper.is-revealing { animation-duration: 0.6s; }
+
+        #pack-opening-overlay.epic-reveal .revealed-card-wrapper.is-revealing { animation: epic-card-throb 1.2s ease-in-out 0.8s 1; }
+        #pack-opening-overlay.epic-reveal .revealed-card.glow, #pack-opening-overlay.shiny-reveal .revealed-card.glow { animation: rarity-glow-pulse 1.8s ease-in-out; animation-iteration-count: 2; }
+        #pack-opening-overlay.fast-forward .epic-reveal .revealed-card.glow, #pack-opening-overlay.fast-forward .shiny-reveal .revealed-card.glow { animation-duration: 0.9s; }
+        #pack-opening-overlay.shiny-reveal .revealed-card-wrapper.is-revealing { animation: epic-card-throb 1.8s ease-in-out 0.8s infinite; }
+        
+        @keyframes golden-card-throb { 0% { transform: translate(-50%, -50%) scale(1.2); } 50% { transform: translate(-50%, -50%) scale(1.3); } 100% { transform: translate(-50%, -50%) scale(1.2); } }
+        #pack-opening-overlay.golden-reveal .revealed-card-wrapper.is-revealing { animation: golden-card-throb 1.8s ease-in-out 0.8s infinite; }
+        #pack-opening-overlay.golden-reveal .revealed-card.glow { animation: rarity-glow-pulse 2s ease-in-out; animation-iteration-count: 2; }
+        #pack-opening-overlay.fast-forward .golden-reveal .revealed-card.glow { animation-duration: 1s; }
+
+
+        .new-indicator { position: absolute; top: 10px; right: 10px; background-color: var(--accent-color); color: var(--bg-color-component); padding: 2px 8px; border-radius: 5px; font-family: 'Poppins', sans-serif; font-weight: 700; font-size: 0.8rem; z-index: 10; animation: pulse-new 1s infinite; text-shadow:none; }
+        @keyframes pulse-new { 0%, 100% { transform: scale(1); box-shadow: 0 0 5px var(--accent-color); } 50% { transform: scale(1.1); box-shadow: 0 0 15px var(--accent-color); } }
+        
+        #pack-summary-container {
+            background: rgba(44, 44, 49, 0.95); border: 2px solid var(--border-color-component); border-radius: 15px; padding: 20px;
+            text-align: center; z-index: 1001; max-width: 90%; width: 800px;
+            box-shadow: 0 0 20px rgba(212, 175, 55, 0.3); animation: fadeIn 0.3s;
+            cursor: pointer; color: var(--text-color-light);
+        }
+        #pack-summary-container h3 { text-shadow: 0 1px 2px #000; margin-top: 0; font-weight: 600; color: var(--text-color-light); }
+        #summary-grid { display: flex; justify-content: center; gap: 15px; flex-wrap: wrap; margin-bottom: 20px; }
+        .summary-card-container { width: 120px; position: relative; }
+        .summary-card-container .card { aspect-ratio: 5 / 7; pointer-events: none; }
+        .summary-card-container .new-indicator { font-size: 0.7em; padding: 2px 6px; top: 0; right: 0; }
+        
+        .hidden { display: none !important; }
+
+        #zoom-overlay {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background-color: rgba(26, 26, 29, 0.9); backdrop-filter: blur(8px);
+            z-index: 1003; display: flex; justify-content: center; align-items: center;
+            cursor: pointer; opacity: 0; pointer-events: none; transition: opacity 0.3s ease;
+        }
+        #zoom-overlay.visible { opacity: 1; pointer-events: all; }
+        #zoomed-card-image {
+            max-width: 90vw; max-height: 85vh; width: auto; height: auto; object-fit: contain;
+            border-radius: 20px; box-shadow: 0 0 40px rgba(212, 175, 55, 0.5); cursor: default;
+        }
+        .zoom-close-btn {
+            position: absolute; top: 20px; right: 30px; font-size: 3rem; color: white;
+            cursor: pointer; transition: transform 0.2s ease; text-shadow: 0 0 10px black;
+        }
+        .zoom-close-btn:hover { transform: scale(1.2); }
+
+        #achievements-section .achievement-category { margin-bottom: 40px; }
+        .achievements-grid {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 15px;
+            max-width: 850px;
+            margin: 0 auto;
+        }
+        .achievement-item {
+            background-color: var(--section-bg);
+            border: 1px solid var(--section-border);
+            border-radius: 10px;
+            padding: 20px;
+            display: grid;
+            grid-template-columns: auto 1fr auto;
+            gap: 20px;
+            align-items: center;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+        .achievement-icon { font-size: 2.5rem; flex-shrink: 0; filter: drop-shadow(0 0 5px var(--accent-color)); }
+        .achievement-info { flex-grow: 1; }
+        .achievement-name { font-family: 'Poppins', sans-serif; font-weight: 600; font-size: 1.1rem; color: var(--text-color); margin: 0 0 5px 0; text-shadow: none; transition: color 0.3s ease; }
+        .achievement-description { font-size: 0.9rem; color: var(--text-color-muted); margin: 0 0 10px 0; transition: color 0.3s ease; }
+        .achievement-progress-container { background-color: var(--input-bg); border-radius: 50px; height: 10px; margin-bottom: 5px; overflow: hidden; transition: background-color 0.3s ease; }
+        .achievement-progress-bar { background-color: var(--accent-color); height: 100%; width: 0%; border-radius: 50px; transition: width 0.5s ease-out; }
+        .achievement-progress-text { font-size: 0.8rem; color: var(--text-color-muted); text-align: right; transition: color 0.3s ease; }
+        .achievement-action {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 8px;
+            width: 150px;
+        }
+        .achievement-reward-text {
+            font-weight: 600;
+            color: var(--accent-color);
+            font-size: 1.1em;
+            text-shadow: 0 0 8px var(--accent-color);
+            text-align: center;
+        }
+        .claim-button {
+            font-family: 'Poppins', sans-serif; font-weight: 600; background-color: var(--accent-color); color: var(--bg-color-component);
+            border: none; padding: 8px 15px; border-radius: 5px; cursor: pointer; transition: all 0.2s ease;
+            text-shadow: none; white-space: nowrap; width: 100%;
+        }
+        .claim-button:not(:disabled):hover { filter: brightness(1.1); transform: scale(1.05); }
+        .claim-button:disabled { background-color: #aaa; color: #fff; cursor: not-allowed; }
+        .claim-button.claimed { background-color: var(--dust-color); color: var(--bg-color-component); cursor: default; filter: opacity(0.7); }
+
+        #mute-btn, #theme-toggle-btn {
+            position: fixed;
+            top: 20px;
+            z-index: 2001;
+            background: var(--global-btn-bg);
+            backdrop-filter: blur(5px);
+            border: 1px solid var(--global-btn-border);
+            color: var(--text-color);
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            cursor: pointer;
+            font-size: 1.5rem;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            transition: all 0.2s ease;
+        }
+        #mute-btn { right: 20px; }
+        #theme-toggle-btn { right: 70px; }
+
+        #mute-btn:hover, #theme-toggle-btn:hover {
+            transform: scale(1.1);
+            border-color: var(--accent-color);
+        }
+
+        @keyframes achievement-claim-glow { from { box-shadow: 0 0 0px var(--dust-color); } 50% { box-shadow: 0 0 30px 5px var(--dust-color); } to { box-shadow: 0 0 0px var(--dust-color); } }
+        .achievement-item.is-claiming { animation: achievement-claim-glow 1.2s ease-out; }
+        @keyframes reward-fly-up { 0% { transform: translate(-50%, 0); opacity: 1; } 100% { transform: translate(-50%, -80px); opacity: 0; } }
+        .achievement-reward-popup {
+            position: absolute; left: 50%; top: 50%; transform: translateX(-50%);
+            font-family: 'Poppins', sans-serif; font-weight: 700; font-size: 1.2rem; color: var(--dust-color);
+            text-shadow: 0 0 8px var(--dust-color);
+            pointer-events: none; animation: reward-fly-up 1.5s ease-out forwards; white-space: nowrap;
+        }
+
+        /* --- CARD SHOP STYLES --- */
+        #card-shop-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 25px;
+            justify-items: center;
+            margin-bottom: 15px;
+        }
+        .shop-card-container {
+            width: 200px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+        .shop-card-price {
+            font-family: 'Poppins', sans-serif;
+            font-weight: 600;
+            font-size: 1rem;
+            color: var(--dust-color);
+            margin: 8px 0;
+            text-shadow: 0 0 5px var(--dust-color);
+        }
+        #shop-reset-timer-container {
+            color: var(--text-color-muted);
+            font-style: italic;
+            transition: color 0.3s ease;
+        }
+       
+        #auth-overlay {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background-color: rgba(26, 26, 29, 0.95);
+            backdrop-filter: blur(10px); z-index: 2000;
+            display: flex; justify-content: center; align-items: center;
+            transition: opacity 0.5s ease;
+        }
+        #auth-container {
+            background-color: var(--primary-color);
+            border: 1px solid var(--border-color-component);
+            border-radius: 15px; padding: 40px; width: 100%;
+            max-width: 450px; text-align: center;
+            box-shadow: 0 0 30px rgba(212, 175, 55, 0.2);
+            color: var(--text-color-light);
+        }
+        #auth-container h2 { margin-top: 0; margin-bottom: 30px; font-size: 2rem; color: var(--text-color-light); }
+        .auth-form { display: flex; flex-direction: column; gap: 20px; }
+        .auth-form input {
+            background-color: var(--bg-color-component);
+            border: 1px solid var(--border-color-component);
+            border-radius: 8px; padding: 15px; color: var(--text-color-light);
+            font-family: 'Poppins', sans-serif; font-size: 1rem;
+            transition: border-color 0.2s;
+        }
+        .auth-form input:focus { outline: none; border-color: var(--accent-color); }
+        .auth-form button {
+            font-family: 'Poppins', sans-serif; font-weight: 600;
+            padding: 15px; border-radius: 8px; border: none;
+            cursor: pointer; transition: all 0.2s ease;
+            font-size: 1.1rem; text-shadow: none;
+        }
+        .auth-submit-btn { background-color: var(--accent-color); color: var(--bg-color-component); }
+        .auth-submit-btn:hover { filter: brightness(1.1); }
+        .auth-guest-btn {
+            background: none; border: 2px solid var(--border-color-component);
+            color: var(--text-muted-light);
+        }
+        .auth-guest-btn:hover { color: white; border-color: var(--accent-color); }
+        .auth-switch-link {
+            color: var(--accent-color); text-decoration: none;
+            font-size: 0.9rem; cursor: pointer; margin-top: 10px;
+        }
+        .auth-switch-link:hover { text-decoration: underline; }
+        .auth-error {
+            color: #f44336; font-size: 0.9rem; margin-top: -10px; min-height: 1.2em;
+        }
+
+        /* --- LOGIN BONUS STYLES --- */
+        #login-bonus-overlay {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background-color: rgba(26, 26, 29, 0.9); backdrop-filter: blur(8px);
+            z-index: 2002; display: flex; justify-content: center; align-items: center;
+            opacity: 0; pointer-events: none; transition: opacity 0.5s ease;
+        }
+        #login-bonus-overlay.visible { opacity: 1; pointer-events: all; }
+        #login-bonus-modal {
+            background-color: var(--primary-color);
+            border: 2px solid var(--accent-color);
+            border-radius: 20px; padding: 30px 40px;
+            max-width: 480px; width: 90%; text-align: center;
+            box-shadow: 0 0 40px rgba(212, 175, 55, 0.4);
+            color: var(--text-color-light);
+            animation: fadeIn 0.5s ease;
+        }
+        #login-bonus-modal h2 {
+            color: var(--text-color-light);
+            border-bottom-color: var(--accent-color);
+            margin-bottom: 25px;
+        }
+        .bonus-reward-text {
+            font-size: 1.8rem;
+            font-weight: 700;
+            color: var(--dust-color);
+            margin: 20px 0;
+            text-shadow: 0 0 15px var(--dust-color);
+        }
+        .streak-info-text {
+            font-size: 1.1rem;
+            color: var(--text-muted-light);
+            margin-bottom: 25px;
+        }
+        #streak-counter {
+            font-weight: 700;
+            color: var(--text-color-light);
+            display: inline-block;
+        }
+        @keyframes streak-pop {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.4); color: var(--accent-color); }
+            100% { transform: scale(1); }
+        }
+        #streak-counter.pop { animation: streak-pop 0.5s ease-in-out; }
+        #claim-bonus-btn {
+            font-family: 'Poppins', sans-serif; font-weight: 700;
+            background-color: var(--accent-color); color: var(--bg-color-component);
+            border: none; padding: 12px 30px; border-radius: 8px;
+            cursor: pointer; transition: all 0.2s ease;
+            font-size: 1.2rem; text-shadow: none; width: 100%;
+        }
+        #claim-bonus-btn:hover { filter: brightness(1.15); transform: scale(1.02); }
+
+        /* --- MEMORY GAME STYLES --- */
+        #memory-game-section { text-align: center; }
+        #memory-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 15px;
+            max-width: 600px;
+            margin: 20px auto;
+            perspective: 1000px;
+        }
+        .memory-card {
+            width: 100%;
+            aspect-ratio: 5/7;
+            position: relative;
+            transform-style: preserve-3d;
+            transition: transform 0.6s;
+            cursor: pointer;
+        }
+        .memory-card.is-flipped { transform: rotateY(180deg); }
+        .memory-card-face {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            backface-visibility: hidden;
+            border-radius: 10px;
+            overflow: hidden;
+        }
+        .memory-card-face.front { transform: rotateY(180deg); }
+        .memory-card-face.back {
+            background-image: url('https://i.imgur.com/wmFBNVx.jpeg');
+            background-size: cover;
+            background-position: center;
+        }
+        .memory-card.matched {
+            transform: scale(0.95);
+            opacity: 0.5;
+            cursor: default;
+        }
+        #memory-game-controls button {
+            font-family: 'Poppins', sans-serif; font-weight: 600;
+            padding: 12px 25px; border-radius: 8px; border: none;
+            cursor: pointer; transition: all 0.2s ease;
+            font-size: 1.1rem; text-shadow: none;
+            background-color: var(--accent-color); color: var(--bg-color-component);
+        }
+        #memory-game-controls button:hover { filter: brightness(1.1); }
+        #memory-game-status {
+            margin-top: 15px;
+            font-size: 1.1rem;
+            font-weight: 600;
+            min-height: 2em;
+        }
+        
+    </style>
+</head>
+<body>
+    <!-- Musica y Sonidos -->
+    <audio id="music-bg" src="https://files.catbox.moe/wznayk.mp3" loop></audio>
+    <audio id="music-pack" src="https://files.catbox.moe/21x57n.mp3" loop></audio>
+    <audio id="sound-pack-open" src="https://files.catbox.moe/erwi8q.mp3"></audio>
+    <audio id="sound-menu-section" src="https://files.catbox.moe/q560m3.mp3"></audio>
+    <audio id="sound-card-common" src="https://files.catbox.moe/va4gze.mp3"></audio>
+    <audio id="sound-card-rare" src="https://files.catbox.moe/va4gze.mp3"></audio>
+    <audio id="sound-card-epic" src="https://files.catbox.moe/krf2tm.mp3"></audio>
+    <audio id="sound-card-legendary" src="https://files.catbox.moe/nkm6rs.mp3"></audio>
+    <audio id="sound-card-trainer" src="https://files.catbox.moe/kdtsyq.mp3"></audio>
+    <audio id="sound-card-shiny" src="https://files.catbox.moe/nkm6rs.mp3"></audio> <!-- Reutiliza sonido legendario -->
+    <audio id="sound-card-golden" src="https://files.catbox.moe/s92ayq.mp3"></audio>
+    <audio id="sound-card-new" src="https://files.catbox.moe/w859js.wav"></audio>
+    <audio id="sound-pack-click" src="https://files.catbox.moe/ku5713.mp3"></audio>
+    <audio id="sound-card-slide" src="https://files.catbox.moe/m70tda.mp3"></audio>
+    <audio id="sound-pack-ready" src="https://files.catbox.moe/af1ls0.mp3"></audio>
+    <audio id="sound-achievement-unlocked" src="https://files.catbox.moe/af1ls0.mp3"></audio>
+    <audio id="sound-disenchant" src="https://files.catbox.moe/4ltrnk.mp3"></audio>
+
+    <button id="theme-toggle-btn">🌙</button>
+    <button id="mute-btn">🔇</button>
+
+    <div id="auth-overlay">
+        <!-- Contenido de autenticación... -->
+        <div id="auth-container">
+            <div id="login-view">
+                <h2>Iniciar Sesión</h2>
+                <form id="login-form" class="auth-form" novalidate>
+                    <input type="email" id="login-email" placeholder="Correo electrónico" required>
+                    <input type="password" id="login-password" placeholder="Contraseña" required>
+                    <p class="auth-error" id="login-error"></p>
+                    <button type="submit" class="auth-submit-btn">Entrar</button>
+                    <button type="button" id="guest-btn-login" class="auth-guest-btn">Modo Invitado</button>
+                </form>
+                <p>¿No tienes cuenta? <a href="#" id="show-register-link" class="auth-switch-link">Regístrate</a></p>
+            </div>
+            <div id="register-view" class="hidden">
+                <h2>Crear Cuenta</h2>
+                <form id="register-form" class="auth-form" novalidate>
+                    <input type="email" id="register-email" placeholder="Correo electrónico" required>
+                    <input type="password" id="register-password" placeholder="Contraseña" required>
+                    <input type="password" id="register-password-confirm" placeholder="Confirmar contraseña" required>
+                    <p class="auth-error" id="register-error"></p>
+                    <button type="submit" class="auth-submit-btn">Registrarse</button>
+                </form>
+                <p>¿Ya tienes cuenta? <a href="#" id="show-login-link" class="auth-switch-link">Inicia sesión</a></p>
+            </div>
+        </div>
+    </div>
+
+    <main class="hidden">
+        <!-- Contenido principal... -->
+        <header>
+            <div id="user-info-bar" class="hidden">
+                <span id="current-user-email">
+                    <span id="maestro-emblem" title="¡Maestro Coleccionista!">🏆</span>
+                    <span id="user-email-text"></span>
+                </span>
+                <button id="logout-btn">Salir</button>
+                <div id="guest-actions" class="hidden">
+                     <span>Modo Invitado</span>
+                     <button id="guest-register-btn">Registrarse</button>
+                </div>
+            </div>
+            <h1>POKÉMON PDR CARDS</h1>
+            <p>Abre sobres, colecciona cartas y completa el álbum.</p>
+        </header>
+
+        <div id="dust-display-container">
+            <span>✨ Polvo Estelar: <span id="dust-amount">0</span></span>
+            <div id="streak-info-display">
+                <span>🔥 Racha: <span id="daily-streak-count">0</span></span>
+                <small>Mañana: +<span id="next-streak-reward">200</span> ✨</small>
+            </div>
+            <button id="add-dust-btn">+1000 ✨</button>
+        </div>
+        
+        <div class="tabs">
+            <button class="tab active" data-target="pack-section">Sobres</button>
+            <button class="tab" data-target="album-section">Álbum</button>
+            <button class="tab" data-target="collection-section">Mi Colección</button>
+            <button class="tab" data-target="achievements-section">Logros</button>
+            <button class="tab" data-target="memory-game-section"><span class="tab-icon">🧩</span> Minijuego</button>
+        </div>
+
+        <section id="pack-section" class="content-section active">
+            <div class="packs-page-layout">
+                <div class="pack-category">
+                    <h2>Sobres Gratuitos</h2>
+                    <div class="pack-container-grid">
+                        <div class="pack-option claimed-pack hidden" id="claimed-pack-option">
+                            <button class="pack" id="claimed-pack-btn">
+                                <img src="https://i.imgur.com/aXgHNgT.png" alt="Sobre Reclamado" class="pack-image">
+                                <span id="claimed-pack-count"></span>
+                            </button>
+                             <p class="pack-description"><strong>Sobre Reclamado</strong><br>¡Gracias a tus logros!</p>
+                        </div>
+                        <div class="pack-option">
+                            <button class="pack" id="pack-8hr-btn" disabled>
+                                <img src="https://i.imgur.com/aXgHNgT.png" alt="Sobre de Cartas" class="pack-image">
+                            </button>
+                            <p class="pack-description"><strong>Sobre Diario</strong><br>Disponible en: <span class="timer" id="timer-8hr">--:--:--</span></p>
+                        </div>
+                        <div class="pack-option">
+                            <button class="pack" id="pack-20hr-btn" disabled>
+                                <img src="https://i.imgur.com/aXgHNgT.png" alt="Sobre de Cartas" class="pack-image">
+                            </button>
+                            <p class="pack-description"><strong>Sobre Diario</strong><br>Disponible en: <span class="timer" id="timer-20hr">--:--:--</span></p>
+                        </div>
+                         <div class="pack-option">
+                            <button class="pack" id="pack-3day-btn" disabled>
+                                <img src="https://i.imgur.com/Td1bOPY.png" alt="Sobre de Cartas" class="pack-image">
+                            </button>
+                            <p class="pack-description"><strong>Sobre Épico</strong><br>Disponible en: <span class="timer" id="timer-3day">--:--:--</span></p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="pack-category">
+                    <h2>Tienda de Cartas Diaria</h2>
+                    <div id="card-shop-grid"></div>
+                    <p id="shop-reset-timer-container">La tienda se reinicia en: <span class="timer" id="shop-reset-timer">--:--:--</span></p>
+                </div>
+
+                <div class="pack-category">
+                    <h2>Tienda de Sobres</h2>
+                    <div class="pack-container-grid">
+                        <div class="pack-option">
+                             <button class="pack" id="basic-pack-btn">
+                                <img src="https://i.imgur.com/aXgHNgT.png" alt="Sobre de Cartas" class="pack-image">
+                             </button>
+                             <p class="pack-description"><strong>Sobre Básico</strong><br>Costo: <span id="basic-pack-cost">200</span> ✨
+                                <small>Un sobre normal y corriente.</small>
+                            </p>
+                        </div>
+                        <div class="pack-option">
+                             <button class="pack" id="premium-pack-btn">
+                                <img src="https://i.imgur.com/Td1bOPY.png" alt="Sobre de Cartas" class="pack-image">
+                             </button>
+                             <p class="pack-description"><strong>Sobre Premium</strong><br>Costo: <span id="premium-pack-cost">2000</span> ✨
+                                <small>Mayor probabilidad de que salgan buenas cartas.</small>
+                            </p>
+                        </div>
+                        <div class="pack-option">
+                             <button class="pack" id="trainer-pack-btn">
+                                <img src="https://i.imgur.com/Td1bOPY.png" alt="Sobre de Entrenador" class="pack-image">
+                             </button>
+                             <p class="pack-description"><strong>Sobre Entrenador</strong><br>Costo: <span id="trainer-pack-cost">2000</span> ✨
+                                <small>¡Contiene 3 Cartas de Entrenador aseguradas!</small>
+                             </p>
+                        </div>
+                        <div class="pack-option">
+                             <button class="pack" id="shiny-pack-btn">
+                                <img src="https://i.imgur.com/Td1bOPY.png" alt="Sobre Shiny" class="pack-image">
+                             </button>
+                             <p class="pack-description"><strong>Sobre Shiny</strong><br>Costo: <span id="shiny-pack-cost">3000</span> ✨
+                                <small>¡Contiene 3 Cartas Shiny aseguradas!</small>
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="album-section" class="content-section">
+            <div class="album-header">
+                <h2>Álbum de Colección</h2>
+                <span id="album-stats">Cartas: 0 / 0</span>
+            </div>
+            <div id="album-grid"></div>
+        </section>
+
+        <section id="collection-section" class="content-section">
+            <div class="collection-header">
+                <h2>Mi Colección</h2>
+                <div class="collection-controls">
+                    <label for="collection-columns-select">Cartas por fila:</label>
+                    <select id="collection-columns-select">
+                        <option value="3">3</option>
+                        <option value="4">4</option>
+                        <option value="5" selected>5</option>
+                        <option value="6">6</option>
+                    </select>
+                    <label for="collection-sort-select">Ordenar por:</label>
+                    <select id="collection-sort-select">
+                        <option value="id">Nº de Álbum</option>
+                        <option value="rarity">Calidad</option>
+                        <option value="quantity">Cantidad</option>
+                        <option value="alphabetical">Alfabético</option>
+                    </select>
+                </div>
+            </div>
+            <div id="collection-grid"></div>
+            <p id="empty-collection-message" class="hidden">Tu colección está vacía. ¡Abre algunos sobres!</p>
+        </section>
+        
+        <section id="achievements-section" class="content-section">
+            <div class="achievement-category">
+                <h3 class="achievement-category-title">✉️ Abrir Sobres ✉️</h3>
+                <div class="achievements-grid" id="achievements-grid-packs"></div>
+            </div>
+            <div class="achievement-category">
+                <h3 class="achievement-category-title">📚 Colección 📚</h3>
+                <div class="achievements-grid" id="achievements-grid-collection"></div>
+            </div>
+            <div class="achievement-category">
+                <h3 class="achievement-category-title">✨ Alquimia ✨</h3>
+                <div class="achievements-grid" id="achievements-grid-disenchant"></div>
+            </div>
+        </section>
+
+        <section id="memory-game-section" class="content-section">
+            <h2>Juego de Memoria</h2>
+            <div id="memory-game-controls">
+                <p>Encuentra las parejas de las cartas de tu colección. ¡Gana Polvo Estelar como recompensa!</p>
+                <button id="start-memory-game-btn">Empezar a Jugar (8 cartas)</button>
+            </div>
+            <div id="memory-grid"></div>
+            <div id="memory-game-status"></div>
+        </section>
+    </main>
+
+    <div id="pack-opening-overlay" class="hidden">
+        <div id="sealed-pack-container"></div>
+        <div id="revealed-card-area"></div>
+        <div id="pack-summary-container" class="hidden">
+             <h3>Contenido del Sobre</h3>
+             <div id="summary-grid"></div>
+             <p style="font-family: 'Poppins', sans-serif; font-style: italic; margin-top: 15px; text-shadow: none;">Haz clic para continuar</p>
+        </div>
+        <p id="reveal-prompt"></p>
+    </div>
+
+    <div id="zoom-overlay" class="hidden">
+        <span class="zoom-close-btn">&times;</span>
+        <img id="zoomed-card-image" src="" alt="Carta ampliada">
+    </div>
+
+    <!-- Login Bonus Modal -->
+    <div id="login-bonus-overlay" class="hidden">
+        <div id="login-bonus-modal">
+            <h2>Recompensa Diaria</h2>
+            <p class="bonus-reward-text">+<span id="bonus-amount">200</span> ✨</p>
+            <p class="streak-info-text">Racha de conexión: <span id="streak-counter">1</span> día(s)</p>
+            <button id="claim-bonus-btn">¡Reclamar!</button>
+        </div>
+    </div>
+
+
+    <script>
+    document.addEventListener('DOMContentLoaded', () => {
+        
+        const CARDS_PER_PACK = 5;
+        const BASIC_PACK_COST = 200;
+        const PREMIUM_PACK_COST = 2000;
+        const TRAINER_PACK_COST = 2000;
+        const SHINY_PACK_COST = 3000;
+
+        const MS_IN_HOUR = 3600000;
+        const TIMER_DURATIONS = {
+            '8hr': 8 * MS_IN_HOUR,
+            '20hr': 20 * MS_IN_HOUR,
+            '3day': 3 * 24 * MS_IN_HOUR,
+        };
+
+        // --- GESTIÓN DE AUDIO AVANZADA ---
+        const audio = {
+            bg: document.getElementById('music-bg'),
+            packMusic: document.getElementById('music-pack'),
+            packOpen: document.getElementById('sound-pack-open'),
+            menuSection: document.getElementById('sound-menu-section'),
+            cardCommon: document.getElementById('sound-card-common'),
+            cardEpic: document.getElementById('sound-card-epic'),
+            cardLegendary: document.getElementById('sound-card-legendary'),
+            cardTrainer: document.getElementById('sound-card-trainer'),
+            cardShiny: document.getElementById('sound-card-shiny'),
+            cardGolden: document.getElementById('sound-card-golden'),
+            cardNew: document.getElementById('sound-card-new'),
+            cardRare: document.getElementById('sound-card-rare'),
+            packClick: document.getElementById('sound-pack-click'),
+            cardSlide: document.getElementById('sound-card-slide'),
+            packReady: document.getElementById('sound-pack-ready'),
+            achievementUnlocked: document.getElementById('sound-achievement-unlocked'),
+            disenchant: document.getElementById('sound-disenchant'),
+        };
+
+        let isMuted = true;
+        let wasBgMusicPlaying = false;
+        let activeFadeInterval = null;
+
+        function playSound(sound) {
+            if (isMuted) return;
+            if (sound) {
+                sound.currentTime = 0;
+                sound.play().catch(e => {});
+            }
+        }
+        
+        function fadeAudio(sound, targetVolume, duration = 1000) {
+            return new Promise(resolve => {
+                if (!sound || (isMuted && targetVolume > 0)) {
+                    if (targetVolume === 0 && sound) {
+                         sound.pause();
+                    }
+                    return resolve();
+                }
+
+                if (targetVolume > 0 && sound.paused) {
+                    sound.play().catch(e => {});
+                }
+
+                let currentVolume = sound.volume;
+                const steps = 50;
+                const stepTime = duration / steps;
+                const volumeStep = (targetVolume - currentVolume) / steps;
+                
+                if (sound.fadeInterval) {
+                    clearInterval(sound.fadeInterval);
+                }
+
+                const fadeInterval = setInterval(() => {
+                    currentVolume += volumeStep;
+                    
+                    if ((volumeStep > 0 && currentVolume >= targetVolume) || (volumeStep < 0 && currentVolume <= targetVolume)) {
+                        sound.volume = targetVolume;
+                        if (targetVolume === 0) {
+                            sound.pause();
+                        }
+                        clearInterval(fadeInterval);
+                        sound.fadeInterval = null;
+                        resolve();
+                    } else {
+                        sound.volume = currentVolume;
+                    }
+                }, stepTime);
+                sound.fadeInterval = fadeInterval;
+            });
+        }
+
+
+        function toggleMusic() {
+            isMuted = !isMuted;
+            if (isMuted) {
+                fadeAudio(audio.bg, 0, 500);
+                fadeAudio(audio.packMusic, 0, 500);
+                DOM.muteBtn.textContent = '🔇';
+            } else {
+                if (!localState.isOpening) {
+                    fadeAudio(audio.bg, 1, 500);
+                } else {
+                    fadeAudio(audio.packMusic, 1, 500);
+                }
+                DOM.muteBtn.textContent = '🔊';
+            }
+        }
+        
+        async function startPackMusic() {
+            wasBgMusicPlaying = !audio.bg.paused && audio.bg.volume > 0;
+            if (wasBgMusicPlaying) {
+                await fadeAudio(audio.bg, 0, 1000);
+            }
+            if (!isMuted) {
+                audio.packMusic.currentTime = 0;
+                await fadeAudio(audio.packMusic, 1, 1000);
+            }
+        }
+
+        async function stopPackMusic() {
+            await fadeAudio(audio.packMusic, 0, 1000);
+            if (wasBgMusicPlaying && !isMuted) {
+                audio.bg.currentTime = 0;
+                await fadeAudio(audio.bg, 1, 1000);
+            }
+        }
+        // --- FIN GESTIÓN DE AUDIO ---
+        
+        const DUST_VALUES = { common: 5, rare: 15, epic: 30, trainer: 100, legendary: 150, shiny: 200, golden: 500 };
+        const CARD_PRICES = { common: 100, rare: 300, epic: 800, trainer: 1500, legendary: 3000, shiny: 5000, golden: 10000 };
+
+        const RARITY_ORDER = { 'golden': 7, 'shiny': 6, 'legendary': 5, 'trainer': 4, 'epic': 3, 'rare': 2, 'common': 1 };
+        const RARITY_DISPLAY_NAMES = { 
+            common: 'Común', 
+            rare: 'Rara', 
+            epic: 'Épica', 
+            trainer: 'Entrenador', 
+            legendary: 'Legendaria', 
+            shiny: 'Shiny',
+            golden: 'Dorada'
+        };
+
+		const allCards = [
+		    { id: 200, name: 'Gelaty', rarity: 'common', isCustom: true, image: 'https://i.imgur.com/YdrB6hq.png'},
+			{ id: 201, name: 'Snivy', rarity: 'common', isCustom: true, image: 'https://i.imgur.com/5STC7pq.png' },
+			{ id: 202, name: 'Servine', rarity: 'common', isCustom: true, image: 'https://i.imgur.com/cK4vybs.png' },
+            { id: 203, name: 'Serperior', rarity: 'rare', isCustom: true, image: 'https://i.imgur.com/CJBqWhK.png' },
+			{ id: 204, name: 'Manuelit', rarity: 'common', isCustom: true, image: 'https://i.imgur.com/iUAkRDR.png' },
+            { id: 205, name: 'Manuleor', rarity: 'common', isCustom: true, image: 'https://i.imgur.com/9CzcctW.png' },
+            { id: 206, name: 'Magnuleon', rarity: 'rare', isCustom: true, image: 'https://i.imgur.com/ZmD2dmX.png' },
+			{ id: 207, name: 'Lapinhead', rarity: 'rare', isCustom: true, image: 'https://i.imgur.com/CTWXciT.png' },
+            { id: 208, name: 'Jimmy', rarity: 'common', isCustom: true, image: 'https://i.imgur.com/ArGgYvf.png' },
+			{ id: 209, name: 'Jeremys', rarity: 'rare', isCustom: true, image: 'https://i.imgur.com/doqebLl.png' },
+			{ id: 210, name: 'Toxineon', rarity: 'rare', isCustom: true, image: 'https://i.imgur.com/ChuohWd.png' },
+			{ id: 211, name: 'Brownie', rarity: 'common', isCustom: true, image: 'https://i.imgur.com/l0a8605.png' },
+            { id: 212, name: 'Browniar', rarity: 'rare', isCustom: true, image: 'https://i.imgur.com/PdCdOA4.png' },
+			{ id: 213, name: 'Cora', rarity: 'common', isCustom: true, image: 'https://i.imgur.com/PF2Fclq.png' },
+            { id: 214, name: 'Coralia', rarity: 'common', isCustom: true, image: 'https://i.imgur.com/jFxwTbI.png' },
+			{ id: 215, name: 'Lapinou', rarity: 'common', isCustom: true, image: 'https://i.imgur.com/2a28pcI.png'},
+			{ id: 216, name: 'Padrelion', rarity: 'common', isCustom: true, image: 'https://i.imgur.com/EWSkGTm.png' },
+			{ id: 217, name: 'JeremysEX', rarity: 'legendary', isCustom: true, image: 'https://i.imgur.com/X4xj3LT.png' },
+            { id: 218, name: 'PadrelionEX', rarity: 'legendary', isCustom: true, image: 'https://i.imgur.com/q0HzMjf.png' },
+		    { id: 219, name: 'BrowniarBeta', rarity: 'epic', isCustom: true, image: 'https://i.imgur.com/I1zh0jC.png' },
+            { id: 220, name: 'Entrenador Guay', rarity: 'trainer', isCustom: true, image: 'https://i.imgur.com/9ORFvil.png' },
+            { id: 221, name: 'Entrenadora As', rarity: 'trainer', isCustom: true, image: 'https://i.imgur.com/fpNYHDY.png' },
+            { id: 222, name: 'Charizard Brillante', rarity: 'shiny', isCustom: true, image: 'https://i.imgur.com/Hy3SvwA.png'},
+            { id: 223, name: 'Mewtwo Brillante', rarity: 'shiny', isCustom: true, image: 'https://i.imgur.com/zLjKgpl.png'},
+            { id: 224, name: 'Rayquaza Brillante', rarity: 'shiny', isCustom: true, image: 'https://i.imgur.com/otjucwu.png'},
+            { id: 225, name: 'Profesor Oak', rarity: 'trainer', isCustom: true, image: 'https://i.imgur.com/hR260TD.png'},
+            { id: 226, name: 'Magikarp Dorado', rarity: 'golden', isCustom: true, image: 'https://i.imgur.com/HuDKyto.png'},
+            { id: 227, name: 'Mew Dorado', rarity: 'golden', isCustom: true, image: 'https://i.imgur.com/uvv1UFI.png'},
+            { id: 228, name: 'Nueva Carta 1', rarity: 'legendary', isCustom: true, image: 'https://i.imgur.com/fZdUiju.png'},
+            { id: 229, name: 'Nueva Carta 2', rarity: 'legendary', isCustom: true, image: 'https://i.imgur.com/6Pvzodk.png'},
+            { id: 230, name: 'Nueva Carta 3', rarity: 'legendary', isCustom: true, image: 'https://i.imgur.com/gxsJN5g.png'},
+            { id: 231, name: 'Nueva Carta 4', rarity: 'legendary', isCustom: true, image: 'https://i.imgur.com/5AOLCZ9.png'},
+            { id: 232, name: 'Nueva Carta 5', rarity: 'legendary', isCustom: true, image: 'https://i.imgur.com/G0SQKoS.png'},
+            { id: 233, name: 'Nueva Carta 6', rarity: 'legendary', isCustom: true, image: 'https://i.imgur.com/krcKdaz.png'},
+            { id: 234, name: 'Nueva Carta 7', rarity: 'legendary', isCustom: true, image: 'https://i.imgur.com/QuRFiIM.png'}
+        ];
+        
+        const totalCardCountsByRarity = {
+            common: allCards.filter(c => c.rarity === 'common').length,
+            rare: allCards.filter(c => c.rarity === 'rare').length,
+            epic: allCards.filter(c => c.rarity === 'epic').length,
+            trainer: allCards.filter(c => c.rarity === 'trainer').length,
+            legendary: allCards.filter(c => c.rarity === 'legendary').length,
+            shiny: allCards.filter(c => c.rarity === 'shiny').length,
+            golden: allCards.filter(c => c.rarity === 'golden').length
+        };
+
+        const achievements = {
+            // Pack Achievements
+            'packs10': { name: 'Abridor Novato', description: 'Abre 10 sobres', type: 'packsOpened', category: 'packs', target: 10, reward: { type: 'pack', kind: 'basic' }, icon: '✉️' },
+            'packs50': { name: 'Abridor Experto', description: 'Abre 50 sobres', type: 'packsOpened', category: 'packs', target: 50, reward: { type: 'pack', kind: 'basic' }, icon: '💌' },
+            'packs100': { name: 'Maestro de Sobres', description: 'Abre 100 sobres', type: 'packsOpened', category: 'packs', target: 100, reward: { type: 'pack', kind: 'basic' }, icon: '📮' },
+            'packs500': { name: 'Mito de los Sobres', description: 'Abre 500 sobres', type: 'packsOpened', category: 'packs', target: 500, reward: { type: 'pack', kind: 'premium' }, icon: '🎁' },
+
+            // Collection Achievements
+            'cards10': { name: 'Coleccionista Casual', description: 'Consigue 10 cartas diferentes', type: 'uniqueCards', category: 'collection', target: 10, reward: { type: 'pack', kind: 'basic' }, icon: '🃏' },
+            'cards50': { name: 'Coleccionista Serio', description: 'Consigue 50 cartas diferentes', type: 'uniqueCards', category: 'collection', target: 50, reward: { type: 'pack', kind: 'basic' }, icon: '🗃️' },
+            'cardsAll': { name: 'Maestro Coleccionista', description: 'Consigue todas las cartas', type: 'uniqueCards', category: 'collection', target: allCards.length, reward: { type: 'dust', amount: 50000 }, icon: '👑' },
+            
+            // Rarity Collection Achievements
+            'allCommon': { name: 'Maestro Común', description: 'Consigue todas las cartas Comunes', type: 'uniqueRarity', rarity: 'common', category: 'collection', target: totalCardCountsByRarity.common, reward: { type: 'dust', amount: 500 }, icon: '⚪' },
+            'allRare': { name: 'Maestro Raro', description: 'Consigue todas las cartas Raras', type: 'uniqueRarity', rarity: 'rare', category: 'collection', target: totalCardCountsByRarity.rare, reward: { type: 'dust', amount: 1000 }, icon: '🔵' },
+            'allEpic': { name: 'Maestro Épico', description: 'Consigue todas las cartas Épicas', type: 'uniqueRarity', rarity: 'epic', category: 'collection', target: totalCardCountsByRarity.epic, reward: { type: 'dust', amount: 2000 }, icon: '🟣' },
+            'allTrainer': { name: 'Maestro de Entrenadores', description: 'Consigue todas las cartas de Entrenador', type: 'uniqueRarity', rarity: 'trainer', category: 'collection', target: totalCardCountsByRarity.trainer, reward: { type: 'pack', kind: 'trainer' }, icon: '🧢' },
+            'allLegendary': { name: 'Maestro Legendario', description: 'Consigue todas las cartas Legendarias', type: 'uniqueRarity', rarity: 'legendary', category: 'collection', target: totalCardCountsByRarity.legendary, reward: { type: 'pack', kind: 'premium' }, icon: '🌟' },
+            'allShiny': { name: 'Maestro Brillante', description: 'Consigue todas las cartas Shiny', type: 'uniqueRarity', rarity: 'shiny', category: 'collection', target: totalCardCountsByRarity.shiny, reward: { type: 'pack', kind: 'shiny' }, icon: '✨' },
+            'goldenTouch': { name: 'Toque Dorado', description: 'Consigue tu primera carta Dorada', type: 'uniqueRarity', rarity: 'golden', category: 'collection', target: 1, reward: { type: 'pack', kind: 'premium' }, icon: '🏆' },
+            
+            // Disenchant Achievements
+            'disenchant25': { name: 'Alquimista Aprendiz', description: 'Convierte 25 cartas', type: 'disenchant', category: 'disenchant', target: 25, reward: { type: 'pack', kind: 'basic' }, icon: '⚗️' },
+            'disenchant100': { name: 'Alquimista Experto', description: 'Convierte 100 cartas', type: 'disenchant', category: 'disenchant', target: 100, reward: { type: 'pack', kind: 'basic' }, icon: '🧬' },
+            'disenchant500': { name: 'Transmutador Arcano', description: 'Convierte 500 cartas', type: 'disenchant', category: 'disenchant', target: 500, reward: { type: 'pack', kind: 'basic' }, icon: '🌌' }
+        };
+
+        const DOM = {
+            mainContent: document.querySelector('main'),
+            authOverlay: document.getElementById('auth-overlay'),
+            loginView: document.getElementById('login-view'),
+            registerView: document.getElementById('register-view'),
+            loginForm: document.getElementById('login-form'),
+            registerForm: document.getElementById('register-form'),
+            loginError: document.getElementById('login-error'),
+            registerError: document.getElementById('register-error'),
+            showRegisterLink: document.getElementById('show-register-link'),
+            showLoginLink: document.getElementById('show-login-link'),
+            guestBtnLogin: document.getElementById('guest-btn-login'),
+            logoutBtn: document.getElementById('logout-btn'),
+            userInfoBar: document.getElementById('user-info-bar'),
+            currentUserEmail: document.getElementById('user-email-text'),
+            guestActions: document.getElementById('guest-actions'),
+            guestRegisterBtn: document.getElementById('guest-register-btn'),
+            overlay: document.getElementById('pack-opening-overlay'),
+            collectionGrid: document.getElementById('collection-grid'), 
+            albumGrid: document.getElementById('album-grid'), 
+            emptyCollectionMsg: document.getElementById('empty-collection-message'), 
+            revealedCardArea: document.getElementById('revealed-card-area'), 
+            prompt: document.getElementById('reveal-prompt'), 
+            tabs: document.querySelectorAll('.tab'), 
+            sections: document.querySelectorAll('.content-section'), 
+            sealedPack: document.getElementById('sealed-pack-container'),
+            dustAmountSpan: document.getElementById('dust-amount'),
+            addDustBtn: document.getElementById('add-dust-btn'),
+            sortSelect: document.getElementById('collection-sort-select'),
+            columnsSelect: document.getElementById('collection-columns-select'),
+            packSummaryContainer: document.getElementById('pack-summary-container'),
+            summaryGrid: document.getElementById('summary-grid'),
+            albumStats: document.getElementById('album-stats'),
+            zoomOverlay: document.getElementById('zoom-overlay'),
+            zoomedCardImage: document.getElementById('zoomed-card-image'),
+            zoomCloseBtn: document.querySelector('.zoom-close-btn'),
+            achievementsGridPacks: document.getElementById('achievements-grid-packs'),
+            achievementsGridCollection: document.getElementById('achievements-grid-collection'),
+            achievementsGridDisenchant: document.getElementById('achievements-grid-disenchant'),
+            claimedPackOption: document.getElementById('claimed-pack-option'),
+            claimedPackBtn: document.getElementById('claimed-pack-btn'),
+            claimedPackCount: document.getElementById('claimed-pack-count'),
+            muteBtn: document.getElementById('mute-btn'),
+            themeToggleBtn: document.getElementById('theme-toggle-btn'),
+            packButtons: { 
+                'basic': document.getElementById('basic-pack-btn'), 
+                'premium': document.getElementById('premium-pack-btn'),
+                'trainer': document.getElementById('trainer-pack-btn'),
+                'shiny': document.getElementById('shiny-pack-btn'),
+                '8hr': document.getElementById('pack-8hr-btn'), 
+                '20hr': document.getElementById('pack-20hr-btn'), 
+                '3day': document.getElementById('pack-3day-btn') 
+            },
+            timers: { 
+                '8hr': document.getElementById('timer-8hr'), 
+                '20hr': document.getElementById('timer-20hr'), 
+                '3day': document.getElementById('timer-3day'),
+                'shop': document.getElementById('shop-reset-timer') 
+            },
+            cardShopGrid: document.getElementById('card-shop-grid'),
+            loginBonusOverlay: document.getElementById('login-bonus-overlay'),
+            loginBonusModal: document.getElementById('login-bonus-modal'),
+            bonusAmount: document.getElementById('bonus-amount'),
+            streakCounter: document.getElementById('streak-counter'),
+            claimBonusBtn: document.getElementById('claim-bonus-btn'),
+            dailyStreakCount: document.getElementById('daily-streak-count'),
+            nextStreakReward: document.getElementById('next-streak-reward'),
+            maestroEmblem: document.getElementById('maestro-emblem'),
+            // Memory Game
+            startMemoryGameBtn: document.getElementById('start-memory-game-btn'),
+            memoryGrid: document.getElementById('memory-grid'),
+            memoryGameStatus: document.getElementById('memory-game-status')
+        };
+        
+        let isFastForwarding = false;
+        const BASE_STORAGE_KEY = 'pdr_cards_v20_'; // Incremented version
+        let currentUser = null;
+        let state = {};
+        let localState = {};
+        let previousTimerStates = {};
+
+        const defaultState = { 
+            userCollection: [], stardust: 0, packTimers: { '8hr': 0, '20hr': 0, '3day': 0 },
+            sortOrder: 'id', columnsPerRow: 5, packsOpenedCount: 0, uniqueCardsCount: 0, disenchantCount: 0,
+            unclaimedPacks: { basic: 0, premium: 0, trainer: 0, shiny: 0 }, 
+            claimedAchievements: [],
+            cardShop: { lastResetDate: null, cards: [] },
+            loginBonus: { lastLoginDate: null, streak: 0 },
+            theme: 'light',
+            hasCompletedCollection: false,
+        };
+
+        const defaultLocalState = { cardsToReveal: [], cardsFromPack: [], isOpening: false, isRevealing: false, memoryGameActive: false };
+
+        function init() {
+            try {
+                setupAuthListeners();
+                checkLoggedInUser();
+            } catch (error) {
+                console.error("Error fatal en la inicialización:", error);
+                alert("Ha ocurrido un error crítico. Por favor, intenta borrar la caché o los datos del sitio.");
+            }
+        }
+
+        function startGame() {
+            DOM.authOverlay.style.opacity = '0';
+            setTimeout(() => DOM.authOverlay.classList.add('hidden'), 500);
+            DOM.mainContent.classList.remove('hidden');
+            
+            loadState();
+            applyTheme();
+            checkLoginBonus(); // Check for daily bonus after loading state
+            setupEventListeners();
+            renderAll();
+            startUniversalTimer();
+            setupHolographicEffect();
+        }
+
+        function getStorageKey(key) { return `${BASE_STORAGE_KEY}${currentUser}_${key}`; }
+        
+        function loadState() {
+            localState = { ...defaultLocalState };
+            let savedState = null;
+            try {
+                savedState = JSON.parse(localStorage.getItem(getStorageKey('gameState')));
+            } catch (e) {
+                console.warn("No se pudo parsear el estado guardado. Se usará el estado por defecto.");
+                savedState = null;
+            }
+            
+            state = JSON.parse(JSON.stringify(defaultState));
+
+            if (savedState) {
+                Object.assign(state, savedState);
+                state.packTimers = { ...defaultState.packTimers, ...(savedState.packTimers || {}) };
+                state.cardShop = { ...defaultState.cardShop, ...(savedState.cardShop || {}) };
+                state.loginBonus = { ...defaultState.loginBonus, ...(savedState.loginBonus || {}) };
+                state.theme = savedState.theme || 'light';
+                state.unclaimedPacks = { ...defaultState.unclaimedPacks, ...(savedState.unclaimedPacks || {}) };
+                state.hasCompletedCollection = savedState.hasCompletedCollection || false;
+            }
+            
+            Object.keys(TIMER_DURATIONS).forEach(packType => {
+                previousTimerStates[packType] = (state.packTimers[packType] || 0) + TIMER_DURATIONS[packType] - Date.now() > 0;
+            });
+            
+            checkAndResetCardShop();
+            updateUserBar();
+            
+            DOM.sortSelect.value = state.sortOrder;
+            DOM.columnsSelect.value = state.columnsPerRow;
+        }
+        
+        function saveState() {
+             if (!currentUser) return;
+             localStorage.setItem(getStorageKey('gameState'), JSON.stringify(state));
+        }
+
+        function updateUserBar() {
+            if (currentUser === 'guest') {
+                DOM.userInfoBar.classList.remove('hidden');
+                DOM.guestActions.classList.remove('hidden');
+                DOM.currentUserEmail.closest('#current-user-email').classList.add('hidden');
+                DOM.logoutBtn.classList.add('hidden');
+            } else if (currentUser) {
+                DOM.userInfoBar.classList.remove('hidden');
+                DOM.guestActions.classList.add('hidden');
+                DOM.currentUserEmail.closest('#current-user-email').classList.remove('hidden');
+                DOM.logoutBtn.classList.remove('hidden');
+                DOM.currentUserEmail.textContent = currentUser;
+                DOM.maestroEmblem.style.display = state.hasCompletedCollection ? 'inline' : 'none';
+            } else {
+                DOM.userInfoBar.classList.add('hidden');
+            }
+        }
+        
+        function renderAll() {
+            updateDustDisplay();
+            updateStreakInfoDisplay();
+            updatePackButtons();
+            updateClaimedPackButton();
+            renderCollection();
+            renderAlbum();
+            renderAchievements();
+            renderCardShop();
+            applyGridColumns();
+        }
+
+        function applyTheme() {
+            if (state.theme === 'dark') {
+                document.body.classList.add('dark-mode');
+                DOM.themeToggleBtn.textContent = '☀️';
+            } else {
+                document.body.classList.remove('dark-mode');
+                DOM.themeToggleBtn.textContent = '🌙';
+            }
+        }
+
+        function toggleTheme() {
+            state.theme = state.theme === 'light' ? 'dark' : 'light';
+            applyTheme();
+            saveState();
+        }
+        
+        function checkAndResetCardShop() {
+            const todayDate = new Date().toISOString().slice(0, 10);
+            if (state.cardShop.lastResetDate !== todayDate) {
+                state.cardShop = {
+                    lastResetDate: todayDate,
+                    cards: generateShopCards()
+                };
+                saveState();
+            }
+        }
+
+        function generateShopCards() {
+            const shopCards = [];
+            const tempAllCards = [...allCards];
+
+            for (let i = 0; i < 3; i++) {
+                if (tempAllCards.length === 0) break;
+                const randIndex = Math.floor(Math.random() * tempAllCards.length);
+                const cardData = tempAllCards.splice(randIndex, 1)[0];
+                shopCards.push({
+                    ...cardData,
+                    price: CARD_PRICES[cardData.rarity],
+                    purchased: false
+                });
+            }
+            return shopCards;
+        }
+
+        function renderCardShop() {
+            DOM.cardShopGrid.innerHTML = '';
+            state.cardShop.cards.forEach((card, index) => {
+                const shopContainer = document.createElement('div');
+                shopContainer.className = 'shop-card-container';
+
+                const cardDOM = createCardDOM(card, { count: 0 }); // Use count 0 to not show disenchant button
+                
+                const price = document.createElement('p');
+                price.className = 'shop-card-price';
+                price.innerHTML = `Precio: ${card.price} ✨`;
+
+                const buyButton = document.createElement('button');
+                buyButton.className = 'action-button';
+                buyButton.textContent = card.purchased ? "Comprada" : "Comprar";
+                buyButton.disabled = card.purchased || state.stardust < card.price;
+                buyButton.onclick = (e) => {
+                    e.stopPropagation();
+                    buyCardFromShop(index);
+                };
+
+                shopContainer.appendChild(cardDOM);
+                shopContainer.appendChild(price);
+                shopContainer.appendChild(buyButton);
+                DOM.cardShopGrid.appendChild(shopContainer);
+            });
+        }
+
+        function buyCardFromShop(cardIndex) {
+            const cardToBuy = state.cardShop.cards[cardIndex];
+            if (!cardToBuy || cardToBuy.purchased || state.stardust < cardToBuy.price) return;
+            
+            playSound(audio.packClick); // Re-use sound
+
+            state.stardust -= cardToBuy.price;
+            cardToBuy.purchased = true;
+            
+            const cardToAdd = { ...cardToBuy, isNew: !state.userCollection.some(c => c.id === cardToBuy.id) };
+            addCardToCollection(cardToAdd);
+
+            saveState();
+            renderAll();
+        }
+
+        function calculateBonusReward(streak) {
+            if (streak <= 0) streak = 1;
+            return Math.min(1000, 200 + (streak - 1) * 50);
+        }
+
+        function checkLoginBonus() {
+            const today = new Date().toISOString().slice(0, 10);
+            if(state.loginBonus.lastLoginDate === today) return; // Already claimed today
+
+            const yesterday = new Date(Date.now() - 86400000).toISOString().slice(0,10);
+
+            let newStreak = 1;
+            if(state.loginBonus.lastLoginDate === yesterday) {
+                newStreak = state.loginBonus.streak + 1;
+            } else {
+                 newStreak = 1;
+            }
+            
+            const reward = calculateBonusReward(newStreak);
+            
+            showLoginBonusModal(reward, newStreak);
+        }
+
+        function showLoginBonusModal(reward, streak) {
+            DOM.bonusAmount.textContent = reward;
+            DOM.streakCounter.textContent = streak;
+            DOM.loginBonusOverlay.classList.remove('hidden');
+            DOM.loginBonusOverlay.classList.add('visible');
+            DOM.streakCounter.classList.remove('pop');
+            void DOM.streakCounter.offsetWidth;
+            DOM.streakCounter.classList.add('pop');
+
+            DOM.claimBonusBtn.onclick = () => {
+                playSound(audio.achievementUnlocked);
+                const today = new Date().toISOString().slice(0, 10);
+                state.loginBonus.lastLoginDate = today;
+                state.loginBonus.streak = streak;
+                state.stardust += reward;
+                DOM.loginBonusOverlay.classList.remove('visible');
+                DOM.loginBonusOverlay.classList.add('hidden');
+                saveState();
+                updateDustDisplay();
+                updateStreakInfoDisplay();
+            };
+        }
+        
+        function setupEventListeners() {
+            DOM.muteBtn.addEventListener('click', toggleMusic);
+            DOM.themeToggleBtn.addEventListener('click', toggleTheme);
+            
+            const packButtonClickHandler = (packType, cost = 0) => {
+                if(localState.isOpening) return;
+                
+                if (packType === 'claimed') {
+                    if (state.unclaimedPacks.basic <= 0) return;
+                    playSound(audio.packClick);
+                    state.unclaimedPacks.basic--;
+                    startPackOpening('shop_basic');
+                    updateClaimedPackButton();
+                } else if (cost > 0) {
+                    if (state.stardust < cost) return;
+                    playSound(audio.packClick);
+                    state.stardust -= cost;
+                    startPackOpening(packType);
+                }
+            };
+
+            DOM.packButtons.basic.onclick = () => packButtonClickHandler('shop_basic', BASIC_PACK_COST);
+            DOM.packButtons.premium.onclick = () => packButtonClickHandler('premium', PREMIUM_PACK_COST);
+            DOM.packButtons.trainer.onclick = () => packButtonClickHandler('trainer_pack', TRAINER_PACK_COST);
+            DOM.packButtons.shiny.onclick = () => packButtonClickHandler('shiny_pack', SHINY_PACK_COST);
+            DOM.claimedPackBtn.onclick = () => packButtonClickHandler('claimed');
+
+            Object.keys(TIMER_DURATIONS).forEach(packType => {
+                DOM.packButtons[packType].onclick = () => { if (DOM.packButtons[packType].disabled) return; playSound(audio.packClick); startPackOpening(packType); };
+            });
+            
+            DOM.addDustBtn.onclick = () => { state.stardust += 1000; saveState(); renderAll(); };
+            DOM.sortSelect.addEventListener('change', (e) => { state.sortOrder = e.target.value; saveState(); renderCollection(); });
+            DOM.columnsSelect.addEventListener('change', (e) => { state.columnsPerRow = e.target.value; applyGridColumns(); saveState(); });
+
+            DOM.tabs.forEach(tab => { 
+                tab.addEventListener('click', () => { 
+                    if (localState.memoryGameActive) return; // Prevent tab switching during game
+                    playSound(audio.menuSection);
+                    const targetId = tab.dataset.target; DOM.tabs.forEach(t => t.classList.remove('active')); 
+                    DOM.sections.forEach(s => s.classList.remove('active')); tab.classList.add('active'); 
+                    document.getElementById(targetId).classList.add('active');
+                }); 
+            });
+
+            DOM.zoomOverlay.addEventListener('click', hideZoomModal); DOM.zoomCloseBtn.addEventListener('click', hideZoomModal); DOM.zoomedCardImage.addEventListener('click', (e) => e.stopPropagation());
+            DOM.overlay.addEventListener('mousedown', () => { if (localState.isOpening || localState.isRevealing) { isFastForwarding = true; DOM.overlay.classList.add('fast-forward'); } });
+            window.addEventListener('mouseup', () => { if (isFastForwarding) { isFastForwarding = false; DOM.overlay.classList.remove('fast-forward'); } });
+            
+            // Memory Game listener
+            DOM.startMemoryGameBtn.addEventListener('click', startMemoryGame);
+        }
+        
+        function startPackOpening(packType) { if (localState.isOpening) return; startPackMusic(); if (TIMER_DURATIONS[packType]) { state.packTimers[packType] = Date.now(); } localState.isOpening = true; DOM.overlay.classList.remove('hidden', 'fast-forward'); DOM.overlay.classList.add('visible'); DOM.sealedPack.innerHTML = `<div class="pack-body"><img src="https://i.imgur.com/aXgHNgT.png" alt="Sobre" class="pack-image"></div>`; DOM.sealedPack.classList.remove('opened'); DOM.sealedPack.style.display = 'block'; DOM.prompt.textContent = "Haz clic en el sobre para abrir"; DOM.prompt.classList.add('visible'); DOM.sealedPack.onclick = () => handlePackOpen(packType); updateAllTimers(); }
+        
+        function handlePackOpen(packType) { playSound(audio.packOpen); DOM.sealedPack.onclick = null; DOM.sealedPack.classList.add('opened'); state.packsOpenedCount++; const ownedCardIds = new Set(state.userCollection.map(c => c.id)); localState.cardsFromPack = generateRandomCards(packType, ownedCardIds); localState.cardsToReveal = [...localState.cardsFromPack]; DOM.prompt.classList.remove('visible'); setTimeout(() => { DOM.sealedPack.style.display = 'none'; revealNextCard(); }, getSpeed(500)); }
+        
+        function revealNextCard() {
+            if (localState.cardsToReveal.length === 0 || localState.isRevealing) return;
+            localState.isRevealing = true;
+            DOM.overlay.classList.remove('interactive');
+            DOM.overlay.onclick = null;
+            DOM.prompt.classList.remove('visible');
+
+            const cardData = localState.cardsToReveal.shift();
+            
+            DOM.overlay.classList.remove('epic-reveal', 'shiny-reveal', 'golden-reveal');
+            if(cardData.rarity === 'epic' || cardData.rarity === 'legendary' || cardData.rarity === 'trainer') {
+                DOM.overlay.classList.add('epic-reveal');
+            } else if(cardData.rarity === 'shiny') {
+                 DOM.overlay.classList.add('shiny-reveal');
+            } else if(cardData.rarity === 'golden') {
+                 DOM.overlay.classList.add('golden-reveal');
+            }
+            
+            const wrapper = document.createElement('div');
+            wrapper.className = 'revealed-card-wrapper';
+            
+            const cardEl = document.createElement('div');
+            cardEl.className = 'revealed-card';
+            
+            const frontFaceDiv = document.createElement('div');
+            frontFaceDiv.className = 'revealed-card-face front';
+            const cleanCardContainer = createCardDOM(cardData, { isNew: cardData.isNew });
+            const actionButton = cleanCardContainer.querySelector('.action-button');
+            if (actionButton) actionButton.remove();
+            if (cardData.isCustom) {
+                const infoDiv = cleanCardContainer.querySelector('.card-info');
+                if (infoDiv) infoDiv.style.display = 'none';
+            }
+            frontFaceDiv.innerHTML = cleanCardContainer.innerHTML;
+            cardEl.innerHTML = `<div class="revealed-card-face back"></div>`;
+            cardEl.appendChild(frontFaceDiv);
+            wrapper.appendChild(cardEl);
+            DOM.revealedCardArea.appendChild(wrapper);
+
+            setTimeout(() => wrapper.classList.add('is-revealing'), getSpeed(50));
+            setTimeout(() => { playSound(audio.cardSlide); cardEl.classList.add('is-flipping'); }, getSpeed(600));
+            
+            setTimeout(() => {
+                const glowColor = getComputedStyle(document.documentElement).getPropertyValue(`--glow-${cardData.rarity}`);
+                cardEl.style.setProperty('--glow-color', glowColor);
+                cardEl.classList.add('glow');
+                if (cardData.isNew) { setTimeout(() => playSound(audio.cardNew), 200); }
+
+                const rarity = cardData.rarity;
+                const finalizeReveal = () => {
+                    setTimeout(() => {
+                        localState.isRevealing = false;
+                        if (isFastForwarding) {
+                            processClickAfterReveal();
+                        } else {
+                            const totalCardsInPack = localState.cardsFromPack.length;
+                            const cardsRevealed = totalCardsInPack - localState.cardsToReveal.length;
+                            const promptText = localState.cardsToReveal.length > 0 
+                                ? `(${cardsRevealed}/${totalCardsInPack}) Clic para siguiente (Mantén para saltar)` 
+                                : "Haz clic para ver el resumen";
+                            DOM.prompt.textContent = promptText;
+                            DOM.prompt.classList.add('visible');
+                            DOM.overlay.classList.add('interactive');
+                            DOM.overlay.onclick = processClickAfterReveal;
+                        }
+                    }, getSpeed(1200));
+                };
+
+                const soundMap = { 'shiny': audio.cardShiny, 'legendary': audio.cardLegendary, 'trainer': audio.cardTrainer, 'epic': audio.cardEpic, 'rare': audio.cardRare, 'common': audio.cardCommon, 'golden': audio.cardGolden };
+                
+                if (rarity === 'legendary' || rarity === 'trainer' || rarity === 'shiny' || rarity === 'golden') {
+                    const specialSound = soundMap[rarity];
+                    const targetVolume = isMuted ? 0 : 1;
+                    fadeAudio(audio.packMusic, 0.2, 400).then(() => {
+                        playSound(specialSound);
+                        specialSound.onended = () => {
+                            if (!isMuted) { fadeAudio(audio.packMusic, targetVolume, 800); }
+                            specialSound.onended = null;
+                        };
+                    });
+                } else {
+                    playSound(soundMap[rarity]);
+                }
+                
+                finalizeReveal();
+
+            }, getSpeed(1400));
+        }
+
+        function processClickAfterReveal() {
+            if (localState.isRevealing) return;
+            DOM.overlay.classList.remove('interactive');
+            DOM.overlay.onclick = null;
+            const currentCardWrapper = DOM.revealedCardArea.querySelector('.revealed-card-wrapper');
+            if (currentCardWrapper) {
+                currentCardWrapper.classList.add('is-collecting');
+                setTimeout(() => currentCardWrapper.remove(), getSpeed(500));
+            }
+            setTimeout(() => {
+                if (localState.cardsToReveal.length > 0) {
+                    revealNextCard();
+                } else {
+                    finishRevelation();
+                }
+            }, getSpeed(250));
+        }
+
+        function addCardToCollection(card) {
+            state.userCollection.push(card);
+            state.uniqueCardsCount = new Set(state.userCollection.map(c => c.id)).size;
+            if(state.uniqueCardsCount >= allCards.length && !state.hasCompletedCollection) {
+                handleFullCollectionComplete();
+            }
+        }
+        
+        function handleFullCollectionComplete() {
+            state.hasCompletedCollection = true;
+            DOM.maestroEmblem.style.display = 'inline'; // Show emblem immediately
+            // The dust reward and pack are given via the achievement system now.
+            // This just handles the visual emblem.
+            // Optional: Show a special modal congratulating the user.
+        }
+
+        function finishRevelation() { isFastForwarding = false; DOM.overlay.classList.remove('fast-forward'); DOM.overlay.onclick = null; DOM.overlay.classList.remove('interactive', 'epic-reveal', 'shiny-reveal'); DOM.prompt.classList.add('hidden'); DOM.revealedCardArea.innerHTML = ''; DOM.summaryGrid.innerHTML = ''; localState.cardsFromPack.forEach(card => { addCardToCollection(card); DOM.summaryGrid.appendChild(createCardDOM(card, { isNew: card.isNew, isSummary: true })); }); DOM.packSummaryContainer.classList.remove('hidden'); DOM.packSummaryContainer.onclick = closeAndCollect; }
+        function closeAndCollect() { DOM.packSummaryContainer.onclick = null; stopPackMusic(); localState.isOpening = false; DOM.overlay.classList.remove('visible'); DOM.overlay.classList.add('hidden'); DOM.packSummaryContainer.classList.add('hidden'); DOM.prompt.classList.add('hidden'); saveState(); renderAll(); }
+        
+        function setupAuthListeners() {
+            DOM.showRegisterLink.onclick = (e) => { e.preventDefault(); switchAuthView(true); };
+            DOM.showLoginLink.onclick = (e) => { e.preventDefault(); switchAuthView(false); };
+            DOM.guestBtnLogin.onclick = () => handleLogin('guest');
+            DOM.logoutBtn.onclick = handleLogout;
+            DOM.guestRegisterBtn.onclick = () => { DOM.authOverlay.classList.remove('hidden'); setTimeout(() => DOM.authOverlay.style.opacity = '1', 10); switchAuthView(true); };
+            DOM.loginForm.onsubmit = (e) => { e.preventDefault(); handleLogin(); };
+            DOM.registerForm.onsubmit = (e) => { e.preventDefault(); handleRegister(); };
+        }
+        function switchAuthView(showRegister) { DOM.loginView.classList.toggle('hidden', showRegister); DOM.registerView.classList.toggle('hidden', !showRegister); DOM.loginError.textContent = ''; DOM.registerError.textContent = ''; }
+        function checkLoggedInUser() { const lastUser = localStorage.getItem(`${BASE_STORAGE_KEY}lastUser`); if (lastUser) { currentUser = lastUser; startGame(); } }
+        function handleLogin(mode = 'user') { if (mode === 'guest') { currentUser = 'guest'; localStorage.setItem(`${BASE_STORAGE_KEY}lastUser`, 'guest'); startGame(); return; } const email = DOM.loginForm.querySelector('#login-email').value.trim().toLowerCase(); const password = DOM.loginForm.querySelector('#login-password').value; DOM.loginError.textContent = ''; if (!email || !password) { DOM.loginError.textContent = 'Por favor, completa todos los campos.'; return; } const users = JSON.parse(localStorage.getItem(`${BASE_STORAGE_KEY}users`)) || []; const user = users.find(u => u.email === email); if (user && user.password === password) { currentUser = email; localStorage.setItem(`${BASE_STORAGE_KEY}lastUser`, email); startGame(); } else { DOM.loginError.textContent = 'Correo o contraseña incorrectos.'; } }
+        function handleRegister() { const email = DOM.registerForm.querySelector('#register-email').value.trim().toLowerCase(); const password = DOM.registerForm.querySelector('#register-password').value; const confirmPassword = DOM.registerForm.querySelector('#register-password-confirm').value; DOM.registerError.textContent = ''; if (!email || !password || !confirmPassword) { DOM.registerError.textContent = 'Por favor, completa todos los campos.'; return; } if (password !== confirmPassword) { DOM.registerError.textContent = 'Las contraseñas no coinciden.'; return; } if (password.length < 6) { DOM.registerError.textContent = 'La contraseña debe tener al menos 6 caracteres.'; return; } let users = JSON.parse(localStorage.getItem(`${BASE_STORAGE_KEY}users`)) || []; if (users.some(u => u.email === email)) { DOM.registerError.textContent = 'Este correo electrónico ya está registrado.'; return; } let guestProgress = null; if (currentUser === 'guest') { guestProgress = localStorage.getItem(getStorageKey('gameState')); } users.push({ email, password }); localStorage.setItem(`${BASE_STORAGE_KEY}users`, JSON.stringify(users)); const previousUser = currentUser; currentUser = email; if (guestProgress) { localStorage.setItem(getStorageKey('gameState'), guestProgress); localStorage.removeItem(`${BASE_STORAGE_KEY}${previousUser}_gameState`); } localStorage.setItem(`${BASE_STORAGE_KEY}lastUser`, email); startGame(); }
+        function handleLogout() { localStorage.removeItem(`${BASE_STORAGE_KEY}lastUser`); location.reload(); }
+
+        function updateDustDisplay() { DOM.dustAmountSpan.textContent = state.stardust; }
+        function updateStreakInfoDisplay() {
+            const currentStreak = state.loginBonus.streak || 0;
+            const nextReward = calculateBonusReward(currentStreak + 1);
+            DOM.dailyStreakCount.textContent = currentStreak;
+            DOM.nextStreakReward.textContent = nextReward;
+        }
+        function updatePackButtons() { 
+            DOM.packButtons['basic'].disabled = state.stardust < BASIC_PACK_COST || localState.isOpening; 
+            DOM.packButtons['premium'].disabled = state.stardust < PREMIUM_PACK_COST || localState.isOpening;
+            DOM.packButtons['trainer'].disabled = state.stardust < TRAINER_PACK_COST || localState.isOpening;
+            DOM.packButtons['shiny'].disabled = state.stardust < SHINY_PACK_COST || localState.isOpening;
+            document.getElementById('basic-pack-cost').textContent = BASIC_PACK_COST; 
+            document.getElementById('premium-pack-cost').textContent = PREMIUM_PACK_COST;
+            document.getElementById('trainer-pack-cost').textContent = TRAINER_PACK_COST;
+            document.getElementById('shiny-pack-cost').textContent = SHINY_PACK_COST;
+        }
+        function updateClaimedPackButton() { const packCount = Object.values(state.unclaimedPacks).reduce((a, b) => a + b, 0); const hasPacks = packCount > 0; DOM.claimedPackOption.classList.toggle('hidden', !hasPacks); if (hasPacks) { DOM.claimedPackCount.textContent = packCount; DOM.claimedPackBtn.disabled = localState.isOpening; } }
+        function disenchantCard(cardId) { playSound(audio.disenchant); const cardIndex = state.userCollection.findIndex(c => c.id === cardId); if (cardIndex > -1) { const card = state.userCollection[cardIndex]; state.stardust += DUST_VALUES[card.rarity]; state.userCollection.splice(cardIndex, 1); state.disenchantCount++; saveState(); renderAll(); } }
+        function getSpeed(baseTime) { return isFastForwarding ? baseTime / 2 : baseTime; }
+        function createCardDOM(cardData, options = {}) { const { isLocked = false, isNew = false, count = 0, isSummary = false } = options; const container = document.createElement('div'); container.className = isSummary ? 'summary-card-container' : 'card-container'; const card = document.createElement('div'); card.className = `card ${cardData.rarity} ${isLocked ? 'locked' : ''}`; const image = document.createElement('img'); image.src = cardData.image; image.alt = cardData.name; image.className = 'card-image'; image.dataset.isCustom = cardData.isCustom; card.appendChild(image); if (!cardData.isCustom) { const infoDiv = document.createElement('div'); infoDiv.className = 'card-info'; infoDiv.innerHTML = `<p class="card-name">${cardData.name}</p><p class="card-rarity">${RARITY_DISPLAY_NAMES[cardData.rarity]}</p>`; card.appendChild(infoDiv); } if (isNew && !isLocked) container.insertAdjacentHTML('beforeend', `<div class="new-indicator">NUEVA!</div>`); if (count > 0 && !isSummary) container.insertAdjacentHTML('beforeend', `<div class="card-count">x${count}</div>`); if (!isLocked && !isSummary) { const zoomIcon = document.createElement('div'); zoomIcon.className = 'zoom-icon'; zoomIcon.innerHTML = '🔍'; zoomIcon.onclick = (e) => { e.stopPropagation(); showZoomModal(cardData.image); }; container.appendChild(zoomIcon); } container.appendChild(card); if (!isLocked && !isSummary) { if (count > 1) { const convertBtn = document.createElement('button'); convertBtn.className = 'action-button'; convertBtn.textContent = `Convertir (+${DUST_VALUES[cardData.rarity]} ✨)`; convertBtn.onclick = (e) => { e.stopPropagation(); disenchantCard(cardData.id); }; container.appendChild(convertBtn); } } return container; }
+        function renderCollection() { DOM.collectionGrid.innerHTML = ''; DOM.emptyCollectionMsg.classList.toggle('hidden', state.userCollection.length > 0); const cardCounts = state.userCollection.reduce((acc, card) => { acc[card.id] = (acc[card.id] || 0) + 1; return acc; }, {}); let uniqueCards = [...new Map(state.userCollection.map(item => [item['id'], item])).values()]; switch(state.sortOrder) { case 'rarity': uniqueCards.sort((a,b) => RARITY_ORDER[b.rarity] - RARITY_ORDER[a.rarity] || a.id - b.id); break; case 'quantity': uniqueCards.sort((a,b) => cardCounts[b.id] - cardCounts[a.id] || a.id - b.id); break; case 'alphabetical': uniqueCards.sort((a,b) => a.name.localeCompare(b.name) || a.id - b.id); break; default: uniqueCards.sort((a,b) => a.id - b.id); break; } uniqueCards.forEach(card => DOM.collectionGrid.appendChild(createCardDOM(card, { count: cardCounts[card.id] }))); }
+        
+        function renderAlbum() {
+            DOM.albumGrid.innerHTML = '';
+            const collectedIds = new Set(state.userCollection.map(c => c.id));
+            DOM.albumStats.textContent = `Cartas: ${collectedIds.size} / ${allCards.length}`;
+            const sortedAllCards = [...allCards].sort((a, b) => a.id - b.id);
+            sortedAllCards.forEach(card => {
+                const isUnlocked = collectedIds.has(card.id);
+                const cardDOM = createCardDOM(card, { isLocked: !isUnlocked });
+                DOM.albumGrid.appendChild(cardDOM);
+            });
+        }
+        
+        function checkAndRenderAchievements() {
+            const collectedIds = new Set(state.userCollection.map(c => c.id));
+            const uniqueCardsByRarity = {};
+
+            for (const rarity in RARITY_ORDER) {
+                uniqueCardsByRarity[rarity] = 0;
+            }
+            allCards.forEach(card => {
+                if (collectedIds.has(card.id)) {
+                    uniqueCardsByRarity[card.rarity]++;
+                }
+            });
+
+            for (const id in achievements) {
+                const achievement = achievements[id];
+                let currentProgress = 0;
+
+                if (achievement.type === 'packsOpened') currentProgress = state.packsOpenedCount;
+                else if (achievement.type === 'uniqueCards') currentProgress = state.uniqueCardsCount;
+                else if (achievement.type === 'disenchant') currentProgress = state.disenchantCount;
+                else if (achievement.type === 'uniqueRarity') {
+                    currentProgress = uniqueCardsByRarity[achievement.rarity] || 0;
+                }
+
+                const isComplete = currentProgress >= achievement.target;
+                const isClaimed = state.claimedAchievements.includes(id);
+                const item = document.getElementById(`achieve-${id}`);
+                if (!item) continue;
+                
+                const progressBar = item.querySelector('.achievement-progress-bar');
+                const progressText = item.querySelector('.achievement-progress-text');
+                const claimButton = item.querySelector('.claim-button');
+                
+                if (progressBar) progressBar.style.width = `${Math.min(100, (currentProgress / achievement.target) * 100)}%`;
+                if (progressText) progressText.textContent = `${Math.min(currentProgress, achievement.target)} / ${achievement.target}`;
+                if (claimButton) {
+                    claimButton.disabled = !isComplete || isClaimed;
+                    if (isClaimed) {
+                        claimButton.textContent = 'Reclamado';
+                        claimButton.classList.add('claimed');
+                    } else if (isComplete) {
+                        claimButton.textContent = 'Reclamar';
+                    } else {
+                        claimButton.textContent = 'Progreso';
+                    }
+                }
+            }
+        }
+        function renderAchievements() {
+            DOM.achievementsGridPacks.innerHTML = '';
+            DOM.achievementsGridCollection.innerHTML = '';
+            DOM.achievementsGridDisenchant.innerHTML = '';
+            for (const id in achievements) {
+                const achievement = achievements[id];
+                const item = document.createElement('div');
+                item.className = 'achievement-item';
+                item.id = `achieve-${id}`;
+                
+                const reward = achievement.reward;
+                let rewardText = '';
+                if (reward.type === 'pack') {
+                    const packKind = reward.kind.charAt(0).toUpperCase() + reward.kind.slice(1);
+                    rewardText = `+1 Sobre ${packKind}`;
+                } else if (reward.type === 'dust') {
+                    rewardText = `+${reward.amount} ✨`;
+                }
+
+                item.innerHTML = `
+                    <div class="achievement-icon">${achievement.icon}</div>
+                    <div class="achievement-info">
+                        <h3 class="achievement-name">${achievement.name}</h3>
+                        <p class="achievement-description">${achievement.description}</p>
+                        <div class="achievement-progress-container"><div class="achievement-progress-bar"></div></div>
+                        <p class="achievement-progress-text"></p>
+                    </div>
+                    <div class="achievement-action">
+                        <div class="achievement-reward-text">${rewardText}</div>
+                        <button class="claim-button" disabled>Progreso</button>
+                    </div>`;
+
+                const claimButton = item.querySelector('.claim-button');
+                claimButton.onclick = () => claimAchievement(id);
+
+                if (achievement.category === 'packs') DOM.achievementsGridPacks.appendChild(item);
+                else if (achievement.category === 'collection') DOM.achievementsGridCollection.appendChild(item);
+                else if (achievement.category === 'disenchant') DOM.achievementsGridDisenchant.appendChild(item);
+            }
+            checkAndRenderAchievements();
+        }
+        
+        function claimAchievement(id) {
+            if (state.claimedAchievements.includes(id)) return;
+            playSound(audio.achievementUnlocked);
+            const achievement = achievements[id];
+            let rewardText = "";
+
+            if (achievement.reward.type === 'pack') {
+                const packKind = achievement.reward.kind || 'basic';
+                if (!state.unclaimedPacks[packKind]) state.unclaimedPacks[packKind] = 0;
+                state.unclaimedPacks[packKind]++;
+                rewardText = `+1 Sobre ${packKind.charAt(0).toUpperCase() + packKind.slice(1)}`;
+            } else if (achievement.reward.type === 'dust') {
+                state.stardust += achievement.reward.amount;
+                rewardText = `+${achievement.reward.amount} ✨`;
+            }
+
+            state.claimedAchievements.push(id);
+            const achievementItem = document.getElementById(`achieve-${id}`);
+            if (achievementItem) {
+                achievementItem.classList.add('is-claiming');
+                const rewardPopup = document.createElement('span');
+                rewardPopup.className = 'achievement-reward-popup';
+                rewardPopup.textContent = rewardText;
+                achievementItem.appendChild(rewardPopup);
+                setTimeout(() => {
+                    achievementItem.classList.remove('is-claiming');
+                    rewardPopup.remove();
+                    checkAndRenderAchievements();
+                }, 1500);
+            }
+            updateClaimedPackButton();
+            updateDustDisplay();
+            saveState();
+        }
+
+        function showZoomModal(imageUrl) { DOM.zoomedCardImage.src = imageUrl; DOM.zoomOverlay.classList.remove('hidden'); DOM.zoomOverlay.classList.add('visible'); }
+        function hideZoomModal() { DOM.zoomOverlay.classList.add('hidden'); DOM.zoomOverlay.classList.remove('visible'); DOM.zoomedCardImage.src = ''; }
+        function applyGridColumns() { DOM.collectionGrid.style.gridTemplateColumns = `repeat(${state.columnsPerRow}, 1fr)`; DOM.albumGrid.style.gridTemplateColumns = `repeat(auto-fill, minmax(180px, 1fr))`;}
+        
+        // --- MINIJUEGO DE MEMORIA ---
+        let memoryGame = {
+            flippedCards: [],
+            matchedPairs: 0,
+            totalPairs: 0,
+            canFlip: true
+        };
+
+        function startMemoryGame() {
+            const uniqueOwnedCards = [...new Map(state.userCollection.map(item => [item.id, item])).values()];
+            if (uniqueOwnedCards.length < 8) {
+                DOM.memoryGameStatus.textContent = "Necesitas tener al menos 8 cartas diferentes para jugar.";
+                return;
+            }
+            
+            localState.memoryGameActive = true;
+            DOM.memoryGameStatus.textContent = "¡Buena suerte!";
+            DOM.startMemoryGameBtn.disabled = true;
+
+            // Select 8 random cards from collection
+            let gameCards = [];
+            let shuffledOwned = uniqueOwnedCards.sort(() => 0.5 - Math.random());
+            for(let i=0; i < 8; i++) {
+                gameCards.push(shuffledOwned[i]);
+            }
+            gameCards = [...gameCards, ...gameCards]; // Duplicate for pairs
+            
+            // Shuffle and create DOM
+            gameCards.sort(() => 0.5 - Math.random());
+            DOM.memoryGrid.innerHTML = '';
+            memoryGame.totalPairs = gameCards.length / 2;
+            memoryGame.matchedPairs = 0;
+
+            gameCards.forEach(cardData => {
+                const cardEl = document.createElement('div');
+                cardEl.className = 'memory-card';
+                cardEl.dataset.cardId = cardData.id;
+                
+                const cardFront = createCardDOM(cardData, {});
+                cardFront.classList.add('memory-card-face', 'front');
+
+                cardEl.innerHTML = `<div class="memory-card-face back"></div>`;
+                cardEl.appendChild(cardFront);
+
+                cardEl.addEventListener('click', () => flipMemoryCard(cardEl));
+                DOM.memoryGrid.appendChild(cardEl);
+            });
+        }
+
+        function flipMemoryCard(cardEl) {
+            if (!memoryGame.canFlip || cardEl.classList.contains('is-flipped')) return;
+
+            playSound(audio.cardSlide);
+            cardEl.classList.add('is-flipped');
+            memoryGame.flippedCards.push(cardEl);
+
+            if (memoryGame.flippedCards.length === 2) {
+                memoryGame.canFlip = false;
+                checkForMemoryMatch();
+            }
+        }
+
+        function checkForMemoryMatch() {
+            const [card1, card2] = memoryGame.flippedCards;
+            if (card1.dataset.cardId === card2.dataset.cardId) {
+                // Match!
+                memoryGame.matchedPairs++;
+                card1.classList.add('matched');
+                card2.classList.add('matched');
+                memoryGame.flippedCards = [];
+                memoryGame.canFlip = true;
+
+                if (memoryGame.matchedPairs === memoryGame.totalPairs) {
+                    endMemoryGame(true);
+                }
+            } else {
+                // No match
+                setTimeout(() => {
+                    card1.classList.remove('is-flipped');
+                    card2.classList.remove('is-flipped');
+                    memoryGame.flippedCards = [];
+                    memoryGame.canFlip = true;
+                }, 1200);
+            }
+        }
+        
+        function endMemoryGame(won) {
+            if (won) {
+                const reward = 250;
+                state.stardust += reward;
+                DOM.memoryGameStatus.textContent = `¡Felicidades! Has ganado ${reward} ✨`;
+                playSound(audio.achievementUnlocked);
+                updateDustDisplay();
+                saveState();
+            }
+            localState.memoryGameActive = false;
+            DOM.startMemoryGameBtn.disabled = false;
+        }
+
+        function generateRandomCards(packType, ownedIds) {
+            const cards = [];
+
+            if (packType === 'trainer_pack' || packType === 'shiny_pack') {
+                const targetRarity = packType.split('_')[0];
+                const candidates = allCards.filter(c => c.rarity === targetRarity);
+                if (candidates.length > 0) {
+                    for (let i = 0; i < 3; i++) {
+                        const cardData = {...candidates[Math.floor(Math.random() * candidates.length)]};
+                        cardData.isNew = !ownedIds.has(cardData.id);
+                        cards.push(cardData);
+                    }
+                }
+                 // Fill the rest of the pack
+                while(cards.length < CARDS_PER_PACK) {
+                    cards.push(getRandomCardByProb('shop_basic', ownedIds));
+                }
+                return cards;
+            }
+
+            for (let i = 0; i < CARDS_PER_PACK; i++) {
+                cards.push(getRandomCardByProb(packType, ownedIds));
+            }
+            return cards;
+        }
+
+        function getRandomCardByProb(packType, ownedIds) {
+             const getRarity = () => {
+                const rand = Math.random();
+                switch (packType) {
+                    case '8hr': case '20hr': // SOBRES DIARIOS
+                        if (rand < 0.75) return 'common';       // 75%
+                        if (rand < 0.90) return 'rare';         // 15%
+                        if (rand < 0.95) return 'epic';         // 5%
+                        if (rand < 0.985) return 'trainer';      // 3.5%
+                        if (rand < 0.995) return 'legendary';    // 1%
+                        if (rand < 0.999) return 'shiny';        // 0.4%
+                        return 'golden';                         // 0.1%
+
+                    case 'shop_basic': // SOBRE BÁSICO DE TIENDA
+                        if (rand < 0.70) return 'common';       // 70%
+                        if (rand < 0.90) return 'rare';         // 20%
+                        if (rand < 0.95) return 'epic';         // 5%
+                        if (rand < 0.985) return 'trainer';      // 3.5%
+                        if (rand < 0.995) return 'legendary';    // 1%
+                        if (rand < 0.999) return 'shiny';        // 0.4%
+                        return 'golden';                         // 0.1%
+                    
+                    case '3day': // Sobre Épico
+                        if (rand < 0.60) return 'epic';         // 60%
+                        if (rand < 0.80) return 'rare';         // 20%
+                        if (rand < 0.90) return 'trainer';      // 10%
+                        if (rand < 0.95) return 'common';       // 5%
+                        if (rand < 0.97) return 'legendary';    // 2%
+                        if (rand < 0.99) return 'shiny';        // 2%
+                        return 'golden';                        // 1%
+
+                    case 'premium': // Sobre Premium
+                        if (rand < 0.70) return 'epic';         // 70%
+                        if (rand < 0.80) return 'trainer';      // 10%
+                        if (rand < 0.85) return 'legendary';    // 5%
+                        if (rand < 0.89) return 'shiny';        // 4%
+                        if (rand < 0.99) return 'rare';         // 10%
+                        return 'golden';                        // 1%
+
+                    default: return 'common';
+                }
+            };
+
+            let rarity = getRarity();
+            let candidates = allCards.filter(c => c.rarity === rarity);
+             while (candidates.length === 0 && rarity !== 'common') {
+                if (rarity === 'golden') rarity = 'shiny';
+                else if (rarity === 'shiny') rarity = 'legendary';
+                else if (rarity === 'legendary') rarity = 'trainer';
+                else if (rarity === 'trainer') rarity = 'epic';
+                else if (rarity === 'epic') rarity = 'rare';
+                else if (rarity === 'rare') rarity = 'common';
+                else break;
+                candidates = allCards.filter(c => c.rarity === rarity);
+            }
+
+            const cardData = {...candidates[Math.floor(Math.random() * candidates.length)]};
+            cardData.isNew = !ownedIds.has(cardData.id);
+            return cardData;
+        }
+
+        function formatTime(ms) { if (ms <= 0) return '¡LISTO!'; const totalSeconds = Math.floor(ms / 1000); const d = Math.floor(totalSeconds / 86400); const h = String(Math.floor((totalSeconds % 86400) / 3600)).padStart(2, '0'); const m = String(Math.floor((totalSeconds % 3600) / 60)).padStart(2, '0'); const s = String(Math.floor(totalSeconds % 60)).padStart(2, '0'); if (d > 0) return `${d}d ${h}h`; return `${h}:${m}:${s}`; }
+        
+        function updateAllTimers() { 
+            const now = Date.now(); 
+            Object.keys(TIMER_DURATIONS).forEach(packType => { 
+                const lastTime = state.packTimers[packType] || 0; 
+                const timeLeft = lastTime + TIMER_DURATIONS[packType] - now; 
+                const isReadyNow = timeLeft <= 0; 
+                DOM.timers[packType].textContent = formatTime(timeLeft); 
+                DOM.packButtons[packType].disabled = !isReadyNow || localState.isOpening; 
+                if (isReadyNow && previousTimerStates[packType]) { 
+                    playSound(audio.packReady); 
+                } 
+                previousTimerStates[packType] = !isReadyNow; 
+            }); 
+            const midnight = new Date().setHours(24, 0, 0, 0);
+            const shopTimeLeft = midnight - now;
+            DOM.timers.shop.textContent = formatTime(shopTimeLeft);
+
+            updatePackButtons(); 
+            updateClaimedPackButton(); 
+        }
+
+        function startUniversalTimer() { updateAllTimers(); setInterval(updateAllTimers, 1000); }
+        function setupHolographicEffect() { document.body.addEventListener('mousemove', e => { document.querySelectorAll('.card-container:not(.locked) .card').forEach(card => { const container = card.parentElement; const rect = container.getBoundingClientRect(); container.style.setProperty('--mouse-x', `${e.clientX - rect.left}px`); container.style.setProperty('--mouse-y', `${e.clientY - rect.top}px`); }); }); }
+        
+        init();
+    });
+    </script>
+
+    <!-- SCRIPT AÑADIDO PARA PWA (FUNCIONAR OFFLINE) -->
+    <script>
+      // Registrar el Service Worker para que la app funcione offline
+      if ('serviceWorker' in navigator) {
+        window.addEventListener('load', () => {
+          navigator.serviceWorker.register('./sw.js')
+            .then(registration => {
+              console.log('Service Worker registrado con éxito:', registration);
+            })
+            .catch(error => {
+              console.log('Error al registrar el Service Worker:', error);
+            });
+        });
+      }
+    </script>
+</body>
+</html>
+```
+
+### ¿Qué hacer ahora?
+
+1.  **Guarda este código**. Es muy importante que lo guardes con el nombre `index.html` (en lugar de `Nuevo Documento de texto (3).html`).
+2.  Asegúrate de tener en la misma carpeta los otros dos archivos que creamos: `manifest.json` y `sw.js`.
+3.  Ahora, sigue el **"Paso Final"** de mi respuesta anterior: subir estos 3 archivos a GitHub Pages (o cualquier otro servicio de hosting) para obtener una URL y poder instalarlo en tu iPhone.
